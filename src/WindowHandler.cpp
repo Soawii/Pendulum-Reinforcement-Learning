@@ -9,28 +9,15 @@ WindowHandler::WindowHandler(sf::VideoMode mode, const sf::String &title, sf::Ui
     m_window.create(mode, title, style, settings);
 
     m_weightShape = new sf::CircleShape(conf::sim::weightRadius * conf::draw::scale);
-    m_baseShape = new sf::CircleShape(conf::sim::baseSize * conf::draw::scale, 50);
     m_jointConnectionShape = new sf::RectangleShape(sf::Vector2f(conf::draw::jointConnectionWidth, conf::draw::jointConnectionWidth));
 
     sf::FloatRect weightBounds = m_weightShape->getLocalBounds();
-    sf::FloatRect baseBounds = m_baseShape->getLocalBounds();
     sf::FloatRect jointConnectionBounds = m_jointConnectionShape->getLocalBounds();
     m_weightShape->setOrigin(weightBounds.width / 2, weightBounds.height / 2);
-    m_baseShape->setOrigin(baseBounds.width / 2, baseBounds.height / 2);
     m_jointConnectionShape->setOrigin(jointConnectionBounds.width / 2, jointConnectionBounds.height / 2);
 
-    m_backgroundColor = sf::Color(30, 30, 30);
-    m_jointColor = sf::Color(255, 255, 255);
-    m_jointConnectionColor = sf::Color(255, 255, 255);
-    m_baseColor = sf::Color(57, 65, 100);
-    m_weightColor = sf::Color(118, 86, 29);
-    m_weightOutlineColor = sf::Color(255, 172, 28);
-    m_sliderColor = sf::Color(0,0,0,0);
-    m_sliderOutlineColor = sf::Color(230, 230, 230);
-
-    m_weightShape->setFillColor(m_weightColor);
-    m_baseShape->setFillColor(m_baseColor);
-    m_jointConnectionShape->setFillColor(m_jointConnectionColor);
+    m_weightShape->setFillColor(conf::colors::weightColor);
+    m_jointConnectionShape->setFillColor(conf::colors::jointConnectionColor);
 }
 
 void WindowHandler::drawSlider() {
@@ -44,9 +31,9 @@ void WindowHandler::drawSlider() {
     std::pair<sf::VertexArray, sf::VertexArray> p = util::getRoundedRect(
             topLeft, width, height,
             (conf::sim::baseRadius + conf::sim::sliderOutlinePadding + conf::sim::sliderOutlineWidth) * conf::draw::scale, 
-            m_sliderColor,
+            conf::colors::sliderColor,
             conf::sim::sliderOutlineWidth * conf::draw::scale, 
-            m_sliderOutlineColor,
+            conf::colors::sliderOutlineColor,
             conf::sim::sliderOutlinePadding * conf::draw::scale);
 
     m_window.draw(p.first);
@@ -61,7 +48,7 @@ void WindowHandler::drawBase(const b2BodyId baseId) {
             sf::Vector2f(screen_anchor.x - conf::sim::baseSize * conf::draw::scale, screen_anchor.y - conf::sim::baseSize * conf::draw::scale), 
             conf::sim::baseSize * conf::draw::scale * 2, conf::sim::baseSize * conf::draw::scale * 2,
             conf::sim::baseRadius * conf::draw::scale, 
-            m_baseColor).first;
+            conf::colors::baseColor).first;
 
     m_window.draw(p);
 }
@@ -78,7 +65,7 @@ void WindowHandler::drawWeight(const b2BodyId weightId) {
         screen_radius, 
         conf::draw::weightStrokeWidth,
         50,
-        m_weightOutlineColor);
+        conf::colors::weightOutlineColor);
     
     /*
     const sf::VertexArray pointing_rect = util::getRect(
@@ -104,7 +91,7 @@ void WindowHandler::drawJoint(const b2JointId jointId) {
     const sf::Vector2i screen_body1 = util::worldToScreen(world_body1);
     const sf::Vector2i screen_body2 = util::worldToScreen(world_body2);
     
-    sf::VertexArray line = util::getLine((sf::Vector2f)screen_body1, (sf::Vector2f)screen_body2, m_jointColor);
+    sf::VertexArray line = util::getLine((sf::Vector2f)screen_body1, (sf::Vector2f)screen_body2, conf::colors::jointColor);
     m_window.draw(line);
     m_jointConnectionShape->setPosition((sf::Vector2f)screen_body1);
     m_window.draw(*m_jointConnectionShape);
@@ -125,7 +112,7 @@ void WindowHandler::drawPendulum(const DoublePendulum& pendulum) {
 }
 
 void WindowHandler::draw(const DoublePendulum& pendulum) {
-    m_window.clear(m_backgroundColor);
+    m_window.clear(conf::colors::backgroundColor);
     drawPendulum(pendulum);
     m_window.display();
 }

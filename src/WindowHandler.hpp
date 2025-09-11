@@ -17,15 +17,5 @@ public:
 
     sf::RenderWindow m_window;
     sf::Shape* m_weightShape;
-    sf::Shape* m_baseShape;
     sf::Shape* m_jointConnectionShape;
-
-    sf::Color m_backgroundColor,
-                m_baseColor, 
-                m_jointColor, 
-                m_jointConnectionColor, 
-                m_weightColor, 
-                m_weightOutlineColor,
-                m_sliderColor,
-                m_sliderOutlineColor;
 };
