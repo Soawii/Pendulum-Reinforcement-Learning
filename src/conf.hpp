@@ -42,6 +42,8 @@ namespace conf {
     class draw {
     public:
         static float scale;
+        static b2Vec2 center;
+
         static float jointWidth;
         static float jointConnectionWidth;
         static float weightStrokeWidth;

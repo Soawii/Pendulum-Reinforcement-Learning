@@ -27,6 +27,8 @@ namespace conf {
 	float sim::baseMaxAcceleration = 3.0f;
 
 	float draw::scale = 150.0f;
+	float draw::center = { 0.0f, 0.0f };
+
 	float draw::jointWidth = 1.0f;
 	float draw::jointConnectionWidth = 4.0f;
 	float draw::weightStrokeWidth = 3.0f;

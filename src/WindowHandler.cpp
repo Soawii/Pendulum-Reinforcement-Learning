@@ -7,6 +7,8 @@
 
 WindowHandler::WindowHandler(sf::VideoMode mode, const sf::String &title, sf::Uint32 style, const sf::ContextSettings &settings) {
     m_window.create(mode, title, style, settings);
+        
+    m_camera = {  }
 
     m_weightShape = new sf::CircleShape(conf::sim::weightRadius * conf::draw::scale);
     m_jointConnectionShape = new sf::RectangleShape(sf::Vector2f(conf::draw::jointConnectionWidth, conf::draw::jointConnectionWidth));
