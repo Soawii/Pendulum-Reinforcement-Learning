@@ -5,25 +5,58 @@
 #include <iostream>
 
 namespace util {
-    sf::Vector2i worldToScreen(b2Vec2 worldPos) {
+    sf::Vector2i worldPosToScreen(b2Vec2 worldPos) {
         sf::Vector2i retVal = {};
-        retVal.x = worldPos.x * conf::draw::scale + conf::window::WIDTH / 2;
-        retVal.y = -worldPos.y * conf::draw::scale + conf::window::HEIGHT / 2;
+        retVal.x = (worldPos.x - conf::draw::center.x) * conf::draw::scale + conf::window::WIDTH / 2;
+        retVal.y = -(worldPos.y - conf::draw::center.y) * conf::draw::scale + conf::window::HEIGHT / 2;
         return retVal;
     }
-
-    b2Vec2 screenToWorld(sf::Vector2i screenPos) {
+    b2Vec2 screenPosToWorld(sf::Vector2i screenPos) {
         b2Vec2 retVal = {};
-        retVal.x = (screenPos.x - conf::window::WIDTH / 2) / conf::draw::scale;
-        retVal.y = -(screenPos.x - conf::window::HEIGHT / 2) / conf::draw::scale;
+        retVal.x = (screenPos.x - conf::window::WIDTH / 2.0f) / conf::draw::scale + conf::draw::center.x;
+        retVal.y = -(screenPos.y - conf::window::HEIGHT / 2.0f) / conf::draw::scale + conf::draw::center.y;
         return retVal;
+    }
+    b2Vec2 screenPosToWorld(sf::Vector2f screenPos) {
+        b2Vec2 retVal = {};
+        retVal.x = (screenPos.x - conf::window::WIDTH / 2.0f) / conf::draw::scale + conf::draw::center.x;
+        retVal.y = -(screenPos.y - conf::window::HEIGHT / 2.0f) / conf::draw::scale + conf::draw::center.y;
+        return retVal;
+    }
+    int worldSizeToScreen(float worldSize) {
+        return roundf(worldSize * conf::draw::scale);
+    }
+    float screenSizeToWorld(float screenSize) {
+        return screenSize / conf::draw::scale;
+    }
+    sf::Vector2i worldSizeToScreen(b2Vec2 worldSize) {
+        return sf::Vector2i(worldSizeToScreen(worldSize.x), worldSizeToScreen(worldSize.y));
+    }
+    b2Vec2 screenSizeToWorld(sf::Vector2i screenSize) {
+        return {screenSizeToWorld(screenSize.x), screenSizeToWorld(screenSize.y)};
+    }
+    b2Vec2 screenSizeToWorld(sf::Vector2f screenSize) {
+        return {screenSizeToWorld(screenSize.x), screenSizeToWorld(screenSize.y)};
     }
 
     float getLen(sf::Vector2f vec) {
         return sqrt(vec.x * vec.x + vec.y * vec.y);
     }
 
-    sf::VertexArray getRect(sf::Vector2f start, sf::Vector2f end, float width, sf::Color color) {
+    sf::VertexArray getRect(sf::Vector2f topLeft, float width, float height, sf::Color color) {
+        sf::VertexArray arr(sf::TriangleFan, 4);
+        arr[0].position = topLeft;
+        arr[1].position = {topLeft.x + width, topLeft.y};
+        arr[2].position = {topLeft.x + width, topLeft.y + height};
+        arr[3].position = {topLeft.x, topLeft.y + height};
+
+        arr[0].color = color;
+        arr[1].color = color;
+        arr[2].color = color;
+        arr[3].color = color;
+        return arr;
+    }
+    sf::VertexArray getRectFromTo(sf::Vector2f start, sf::Vector2f end, float width, sf::Color color) {
         sf::VertexArray arr(sf::TriangleFan, 4);
         sf::Vector2f startToEnd = end - start;
         sf::Vector2f normal{-startToEnd.y, startToEnd.x};

@@ -1,6 +1,7 @@
 #pragma once
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 namespace conf {
     class constants {
@@ -18,15 +19,15 @@ namespace conf {
 
     class sim {
     public:
-        static int weight_amount;
+        static int weightAmount;
 
-        static float gravity;
+        static std::vector<float> angles;
+        static b2Vec2 gravity;
         static int substepCount;
         static float jointLength;
         static float weightMass;
         static float weightRadius;
-        static float angleA;
-        static float angleB;
+        static float weightStrokeWidth;
         static float rangeLeft;
         static float rangeRight;
 
@@ -34,19 +35,26 @@ namespace conf {
         static float baseRadius;
         static float sliderOutlineWidth;
         static float sliderOutlinePadding;
-
-        static float baseGoalVelocity;
-        static float baseMaxAcceleration;
     };
 
     class draw {
     public:
         static float scale;
+        static float minScale;
+        static float maxScale;
         static b2Vec2 center;
 
         static float jointWidth;
         static float jointConnectionWidth;
-        static float weightStrokeWidth;
+    };
+
+    class inputs {
+    public:
+        static float baseMaxVelocity;
+        static float baseAcceleration;
+        static float zoomMult;
+        static float cameraMouseSensitivity;
+        static float cameraKeyboardSensitivity;
     };
 
     class colors {
@@ -60,4 +68,4 @@ namespace conf {
             sliderColor,
             sliderOutlineColor;
     };
-};
+}

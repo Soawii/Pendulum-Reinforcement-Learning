@@ -3,7 +3,6 @@
 #include "DoublePendulum.hpp"
 #include "conf.hpp"
 #include "util.hpp"
-#include "Camera.hpp"
 
 class WindowHandler {
 public:
@@ -16,8 +15,5 @@ public:
     void drawPendulum(const DoublePendulum& pendulum);
     void draw(const DoublePendulum& pendulum);
 
-    Camera m_camera;
     sf::RenderWindow m_window;
-    sf::Shape* m_weightShape;
-    sf::Shape* m_jointConnectionShape;
 };

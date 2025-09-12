@@ -12,16 +12,17 @@ int main() {
     engine.createWindowHandler(sf::VideoMode(conf::window::WIDTH, conf::window::HEIGHT), "SFML + Box2D with CMake");
     engine.getWindow()->setFramerateLimit(conf::window::FPS);
 
-    float angles[2] = {conf::sim::angleA, conf::sim::angleB};
-    engine.createPendulum(b2Vec2{0.0f, conf::sim::gravity}, conf::sim::jointLength, conf::sim::weightMass, conf::sim::weightRadius, angles, conf::sim::weight_amount);
+    engine.createPendulum(conf::sim::gravity, conf::sim::jointLength, conf::sim::weightMass, conf::sim::weightRadius, conf::sim::weightAmount, conf::sim::angles);
 
     while (engine.getWindow()->isOpen()) {
         sf::Event event;
+
+        engine.startFrame();
         while (engine.getWindow()->pollEvent(event)) {
             engine.handleEvent(event);
         }
         engine.update(conf::window::dt);
-        engine.m_windowHandler->draw(*engine.m_pendulum);
+        engine.m_context.m_windowHandler->draw(*engine.m_context.m_pendulum);
     }
     return 0;
 }

@@ -2,36 +2,43 @@
 #include "conf.hpp"
 
 namespace conf {
-	float constants::PI = 3.14159265359;
+	float constants::PI = 3.14159265359f;
 
 	int window::WIDTH = 1600;
 	int window::HEIGHT = 900;
 	int window::FPS = 60;
 	float window::dt = 1.0f / FPS;
 
-	int sim::weight_amount = 2; // should be <= 10
-	float sim::gravity = -9.81f;
+	int sim::weightAmount = 2; 
+	std::vector<float> sim::angles = { 	// angles for the weights, needs to contain at least the same amount of angles 
+		constants::PI / 2 - 0.1f,		// as there weights (indicated by sim::weightAmount)
+		constants::PI / 2 - 0.1f};
+	b2Vec2 sim::gravity = {0.0f, -9.81f};
 	int sim::substepCount = 8;
 	float sim::jointLength = 1.0f;
 	float sim::weightMass = 1.0f;
 	float sim::weightRadius = 0.15f;
-	float sim::angleA = constants::PI / 2;
-	float sim::angleB = constants::PI / 2 + 0.05;
+	float sim::weightStrokeWidth = 0.01f;
 	float sim::rangeLeft = -2.0f;
 	float sim::rangeRight = 2.0f;
 	float sim::baseSize = 0.1f;
 	float sim::baseRadius = 0.02f;
 	float sim::sliderOutlineWidth = 0.014f;
 	float sim::sliderOutlinePadding = 0.026f;
-	float sim::baseGoalVelocity = 3.0f;
-	float sim::baseMaxAcceleration = 3.0f;
 
 	float draw::scale = 150.0f;
-	float draw::center = { 0.0f, 0.0f };
+	float draw::minScale = 10.0f;
+	float draw::maxScale = 5000.0f;
+	b2Vec2 draw::center = { 0.0f, 0.0f };
+
+	float inputs::baseMaxVelocity = 3.0f;
+	float inputs::baseAcceleration = 3.0f;
+	float inputs::zoomMult = 1.2f;
+	float inputs::cameraMouseSensitivity = 1.0f;
+	float inputs::cameraKeyboardSensitivity = 20.0f;
 
 	float draw::jointWidth = 1.0f;
 	float draw::jointConnectionWidth = 4.0f;
-	float draw::weightStrokeWidth = 3.0f;
 
 	sf::Color colors::backgroundColor = sf::Color(30, 30, 30);
 	sf::Color colors::jointColor = sf::Color(255, 255, 255);

@@ -1,9 +1,10 @@
 #pragma once
 #include <box2d/box2d.h>
+#include <vector>
 
 class DoublePendulum {
 public:
-    DoublePendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, float angles[2], int weights);
+    DoublePendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, int weightAmount, std::vector<float> angles);
     void step(float dt, int subStepCount);
 
     float getBasePosition();

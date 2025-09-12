@@ -3,7 +3,7 @@
 #include "conf.hpp"
 #include <iostream>
 
-DoublePendulum::DoublePendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, float angles[2], int weightAmount) {
+DoublePendulum::DoublePendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, int weightAmount, std::vector<float> angles) {
     m_weightAmount = weightAmount;
     
     b2WorldDef worldDef = b2DefaultWorldDef();
@@ -99,12 +99,12 @@ void DoublePendulum::resetVelocities() {
 }
 
 void DoublePendulum::updateVelocity(float dt) {
-    float dv = dt * conf::sim::baseMaxAcceleration;
+    float dv = dt * conf::inputs::baseAcceleration;
     float direction = m_baseGoalVelocity - m_baseVelocity;
     if (abs(direction) > 0.0001) {
         m_baseVelocity += dv * direction;
-        m_baseVelocity = std::min(m_baseVelocity, conf::sim::baseGoalVelocity);
-        m_baseVelocity = std::max(m_baseVelocity, -conf::sim::baseGoalVelocity);
+        m_baseVelocity = std::min(m_baseVelocity, conf::inputs::baseMaxVelocity);
+        m_baseVelocity = std::max(m_baseVelocity, -conf::inputs::baseMaxVelocity);
     }
     setBaseVelocity(m_baseVelocity);
 }

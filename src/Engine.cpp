@@ -5,41 +5,34 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-Engine::Engine() {
-    
+Engine::Engine() : m_context(), m_mouseHandler(m_context), m_keyboardHandler(m_context) {
+
 }
+
 void Engine::createWindowHandler(sf::VideoMode mode, const sf::String &title, sf::Uint32 style, const sf::ContextSettings &settings) {
-    m_windowHandler = new WindowHandler(mode, title, style, settings);
+    m_context.m_windowHandler = new WindowHandler(mode, title, style, settings);
 }
-void Engine::createPendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, float angles[2], int weightAmount) {
-    m_pendulum = new DoublePendulum(gravity, jointLength, weightMass, weightRadius, angles, weightAmount);
+void Engine::createPendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, int weightAmount, std::vector<float> angles) {
+    m_context.m_pendulum = new DoublePendulum(gravity, jointLength, weightMass, weightRadius, weightAmount, angles);
+}
+
+void Engine::startFrame() {
+    m_mouseHandler.startFrame();
+    m_keyboardHandler.startFrame();
 }
 void Engine::handleEvent(sf::Event& e) {
     if (e.type == sf::Event::Closed) {
-        m_windowHandler->m_window.close();
+        m_context.m_windowHandler->m_window.close();
     }
-    else if (e.type == sf::Event::KeyPressed) {
-        const auto code = e.key.code;
-        if (code == sf::Keyboard::Space) {
-            for (int i = 0; i < m_pendulum->m_weightAmount; i++) {
-                b2Body_SetLinearVelocity(m_pendulum->m_weights[i], {0.0f, 0.0f});
-            }
-        }
-    }
+    m_mouseHandler.handleEvent(e);
+    m_keyboardHandler.handleEvent(e);
 }
 void Engine::update(float dt) {
-    float goalVelocity = 0.0f;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        goalVelocity = -conf::sim::baseGoalVelocity;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        goalVelocity = conf::sim::baseGoalVelocity;
-    }
-    m_pendulum->setBaseGoalVelocity(goalVelocity);
-
-    m_pendulum->update(dt);
+    m_mouseHandler.update(dt);
+    m_keyboardHandler.update(dt);
+    m_context.m_pendulum->update(dt);
 }
 
 sf::RenderWindow* Engine::getWindow() {
-    return &m_windowHandler->m_window;
+    return &m_context.m_windowHandler->m_window;
 }
