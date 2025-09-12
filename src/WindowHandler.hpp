@@ -3,10 +3,14 @@
 #include "DoublePendulum.hpp"
 #include "conf.hpp"
 #include "util.hpp"
+#include "Camera.hpp"
 
 class WindowHandler {
 public:
-    WindowHandler(sf::VideoMode mode, const sf::String &title, sf::Uint32 style, const sf::ContextSettings &settings);
+    WindowHandler(
+        sf::VideoMode mode, const sf::String &title, 
+        b2Vec2 cameraCenter, float cameraZoom,
+        sf::Uint32 style, const sf::ContextSettings &settings);
 
     void drawSlider();
     void drawBase(const b2BodyId baseId);
@@ -16,4 +20,5 @@ public:
     void draw(const DoublePendulum& pendulum);
 
     sf::RenderWindow m_window;
+    Camera m_camera;
 };

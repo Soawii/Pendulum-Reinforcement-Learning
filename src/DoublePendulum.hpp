@@ -10,6 +10,8 @@ public:
     float getBasePosition();
     void setBasePosition();
 
+    b2BodyId getInteresectingBody(b2Vec2 p);
+
     void applyForceToBase(b2Vec2 force);
     void setBaseVelocity(float velocity);
     void setBaseGoalVelocity(float velocity);
@@ -18,6 +20,7 @@ public:
     void updateVelocity(float dt);
     void update(float dt);
     
+    float m_weightRadius;
     int m_weightAmount;
     b2WorldId m_world;
     b2BodyId m_anchor;

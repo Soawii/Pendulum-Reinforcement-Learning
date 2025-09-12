@@ -4,15 +4,7 @@
 #include "conf.hpp"
 
 namespace util {
-    sf::Vector2i worldPosToScreen(b2Vec2 worldPos);
-    b2Vec2 screenPosToWorld(sf::Vector2i screenPos);
-    b2Vec2 screenPosToWorld(sf::Vector2f screenPos);
-    int worldSizeToScreen(float worldSize);
-    float screenSizeToWorld(float screenSize);
-    sf::Vector2i worldSizeToScreen(b2Vec2 worldSize);
-    b2Vec2 screenSizeToWorld(sf::Vector2i screenSize);
-    b2Vec2 screenSizeToWorld(sf::Vector2f screenSize);
-
+    float getSquaredLengthBetweenPointAndBody(b2Vec2 pos, b2BodyId body);
     float getLen(sf::Vector2f vec);
     sf::VertexArray getRect(sf::Vector2f topLeft, float width, float height, sf::Color color = sf::Color(255,255,255));
     sf::VertexArray getRectFromTo(sf::Vector2f start, sf::Vector2f end, float width, sf::Color color = sf::Color(255,255,255));

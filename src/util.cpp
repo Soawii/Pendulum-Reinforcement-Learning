@@ -5,38 +5,10 @@
 #include <iostream>
 
 namespace util {
-    sf::Vector2i worldPosToScreen(b2Vec2 worldPos) {
-        sf::Vector2i retVal = {};
-        retVal.x = (worldPos.x - conf::draw::center.x) * conf::draw::scale + conf::window::WIDTH / 2;
-        retVal.y = -(worldPos.y - conf::draw::center.y) * conf::draw::scale + conf::window::HEIGHT / 2;
-        return retVal;
-    }
-    b2Vec2 screenPosToWorld(sf::Vector2i screenPos) {
-        b2Vec2 retVal = {};
-        retVal.x = (screenPos.x - conf::window::WIDTH / 2.0f) / conf::draw::scale + conf::draw::center.x;
-        retVal.y = -(screenPos.y - conf::window::HEIGHT / 2.0f) / conf::draw::scale + conf::draw::center.y;
-        return retVal;
-    }
-    b2Vec2 screenPosToWorld(sf::Vector2f screenPos) {
-        b2Vec2 retVal = {};
-        retVal.x = (screenPos.x - conf::window::WIDTH / 2.0f) / conf::draw::scale + conf::draw::center.x;
-        retVal.y = -(screenPos.y - conf::window::HEIGHT / 2.0f) / conf::draw::scale + conf::draw::center.y;
-        return retVal;
-    }
-    int worldSizeToScreen(float worldSize) {
-        return roundf(worldSize * conf::draw::scale);
-    }
-    float screenSizeToWorld(float screenSize) {
-        return screenSize / conf::draw::scale;
-    }
-    sf::Vector2i worldSizeToScreen(b2Vec2 worldSize) {
-        return sf::Vector2i(worldSizeToScreen(worldSize.x), worldSizeToScreen(worldSize.y));
-    }
-    b2Vec2 screenSizeToWorld(sf::Vector2i screenSize) {
-        return {screenSizeToWorld(screenSize.x), screenSizeToWorld(screenSize.y)};
-    }
-    b2Vec2 screenSizeToWorld(sf::Vector2f screenSize) {
-        return {screenSizeToWorld(screenSize.x), screenSizeToWorld(screenSize.y)};
+    float getSquaredLengthBetweenPointAndBody(b2Vec2 pos, b2BodyId body) {
+        b2Vec2 posBody = b2Body_GetPosition(body);
+        b2Vec2 diff = posBody - pos;
+        return diff.x * diff.x + diff.y * diff.y;
     }
 
     float getLen(sf::Vector2f vec) {

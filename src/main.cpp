@@ -9,7 +9,7 @@
 int main() {
     Engine engine;
 
-    engine.createWindowHandler(sf::VideoMode(conf::window::WIDTH, conf::window::HEIGHT), "SFML + Box2D with CMake");
+    engine.createWindowHandler(sf::VideoMode(conf::window::WIDTH, conf::window::HEIGHT), "Double Pendulum Balancing", conf::draw::center, conf::draw::scale);
     engine.getWindow()->setFramerateLimit(conf::window::FPS);
 
     engine.createPendulum(conf::sim::gravity, conf::sim::jointLength, conf::sim::weightMass, conf::sim::weightRadius, conf::sim::weightAmount, conf::sim::angles);

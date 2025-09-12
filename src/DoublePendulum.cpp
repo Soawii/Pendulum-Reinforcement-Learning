@@ -1,10 +1,12 @@
 #include <box2d/box2d.h>
 #include "DoublePendulum.hpp"
 #include "conf.hpp"
+#include "util.hpp"
 #include <iostream>
 
 DoublePendulum::DoublePendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, int weightAmount, std::vector<float> angles) {
     m_weightAmount = weightAmount;
+    m_weightRadius = weightRadius;
     
     b2WorldDef worldDef = b2DefaultWorldDef();
     worldDef.gravity = gravity;
@@ -79,6 +81,17 @@ DoublePendulum::DoublePendulum(b2Vec2 gravity, float jointLength, float weightMa
 float DoublePendulum::getBasePosition() {
     return b2Body_GetPosition(m_anchor).x;
 }
+b2BodyId DoublePendulum::getInteresectingBody(b2Vec2 p) {
+    for (int i = 0; i < m_weightAmount; i++) {
+        if (util::getSquaredLengthBetweenPointAndBody(p, m_weights[i]) <= m_weightRadius * m_weightRadius) {
+            return m_weights[i];
+        }
+    }
+    if (util::getSquaredLengthBetweenPointAndBody(p, m_anchor) <= 1.2 * conf::sim::baseSize * conf::sim::baseSize) {
+        return m_anchor;
+    }
+    return {};
+}
 
 void DoublePendulum::step(float dt, int subStepCount) {
     b2World_Step(m_world, dt, subStepCount);
@@ -101,7 +114,7 @@ void DoublePendulum::resetVelocities() {
 void DoublePendulum::updateVelocity(float dt) {
     float dv = dt * conf::inputs::baseAcceleration;
     float direction = m_baseGoalVelocity - m_baseVelocity;
-    if (abs(direction) > 0.0001) {
+    if (abs(direction) > 0.001) {
         m_baseVelocity += dv * direction;
         m_baseVelocity = std::min(m_baseVelocity, conf::inputs::baseMaxVelocity);
         m_baseVelocity = std::max(m_baseVelocity, -conf::inputs::baseMaxVelocity);

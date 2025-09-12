@@ -53,6 +53,7 @@ namespace conf {
         static float baseMaxVelocity;
         static float baseAcceleration;
         static float zoomMult;
+        static float zoomMaxVelocity;
         static float cameraMouseSensitivity;
         static float cameraKeyboardSensitivity;
     };

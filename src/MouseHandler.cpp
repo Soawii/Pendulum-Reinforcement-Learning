@@ -44,13 +44,28 @@ void MouseHandler::handleEvent(sf::Event& e) {
 }
 void MouseHandler::update(float dt) {
     m_context.pos = sf::Mouse::getPosition(m_engineContext.m_windowHandler->m_window);
+
     if (m_context.mouseWheelScrolled) {
-        camera::zoomInAt(std::pow(conf::inputs::zoomMult, m_context.scrollDelta), m_context.pos);
+        m_engineContext.m_windowHandler->m_camera.zoomInAt(std::pow(conf::inputs::zoomMult, m_context.scrollDelta), m_context.pos);
     }
 
     if (isPressedForMultipleFrames(sf::Mouse::Left)) {
         sf::Vector2f mouse_delta(-(m_context.pos.x - m_contextPrev.pos.x), m_context.pos.y - m_contextPrev.pos.y);
-        camera::move(mouse_delta * conf::inputs::cameraMouseSensitivity);
+        m_engineContext.m_windowHandler->m_camera.unbindFromBody();
+        m_engineContext.m_windowHandler->m_camera.move(mouse_delta * conf::inputs::cameraMouseSensitivity);
+    }
+
+    if (isPressedThisFrame(sf::Mouse::Right)) {
+        b2Vec2 mouseWorldPos = m_engineContext.m_windowHandler->m_camera.screenPosToWorld(m_context.pos);
+        b2BodyId intersectingBody = m_engineContext.m_pendulum->getInteresectingBody(mouseWorldPos);
+        if (B2_IS_NON_NULL(intersectingBody)) {
+            if (B2_ID_EQUALS(m_engineContext.m_windowHandler->m_camera.m_boundBody, intersectingBody)) {
+                m_engineContext.m_windowHandler->m_camera.unbindFromBody();
+            }
+            else {
+                m_engineContext.m_windowHandler->m_camera.bindToBody(intersectingBody);
+            }
+        }
     }
 
     m_contextPrev = m_context;
