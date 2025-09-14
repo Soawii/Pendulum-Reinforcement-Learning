@@ -5,9 +5,8 @@
 #include <iostream>
 
 namespace util {
-    float getSquaredLengthBetweenPointAndBody(b2Vec2 pos, b2BodyId body) {
-        b2Vec2 posBody = b2Body_GetPosition(body);
-        b2Vec2 diff = posBody - pos;
+    float getSquaredLengthBetweenPoints(b2Vec2 pos1, b2Vec2 pos2) {
+        b2Vec2 diff = pos2 - pos1;
         return diff.x * diff.x + diff.y * diff.y;
     }
 

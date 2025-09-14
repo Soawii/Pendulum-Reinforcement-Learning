@@ -4,7 +4,7 @@
 #include "conf.hpp"
 
 namespace util {
-    float getSquaredLengthBetweenPointAndBody(b2Vec2 pos, b2BodyId body);
+    float getSquaredLengthBetweenPoints(b2Vec2 pos1, b2Vec2 pos2);
     float getLen(sf::Vector2f vec);
     sf::VertexArray getRect(sf::Vector2f topLeft, float width, float height, sf::Color color = sf::Color(255,255,255));
     sf::VertexArray getRectFromTo(sf::Vector2f start, sf::Vector2f end, float width, sf::Color color = sf::Color(255,255,255));

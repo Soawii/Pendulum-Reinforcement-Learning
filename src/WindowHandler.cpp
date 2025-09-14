@@ -9,8 +9,9 @@
 WindowHandler::WindowHandler(
         sf::VideoMode mode, const sf::String &title, 
         b2Vec2 cameraCenter, float cameraZoom,
+        float cameraCenterSmoothing, float cameraZoomSmoothing,
         sf::Uint32 style, const sf::ContextSettings &settings) 
-        : m_camera(cameraCenter, cameraZoom) {
+        : m_camera(cameraCenter, cameraZoom, cameraCenterSmoothing, cameraZoomSmoothing) {
     m_window.create(mode, title, style, settings);
 }
 

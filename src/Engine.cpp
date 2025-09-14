@@ -12,8 +12,9 @@ Engine::Engine() : m_context(), m_mouseHandler(m_context), m_keyboardHandler(m_c
 void Engine::createWindowHandler(
         sf::VideoMode mode, const sf::String &title,
         b2Vec2 cameraCenter, float cameraZoom,
+        float cameraCenterSmoothing, float cameraZoomSmoothing,
         sf::Uint32 style, const sf::ContextSettings &settings) {
-    m_context.m_windowHandler = new WindowHandler(mode, title, cameraCenter, cameraZoom, style, settings);
+    m_context.m_windowHandler = new WindowHandler(mode, title, cameraCenter, cameraZoom, cameraCenterSmoothing, cameraZoomSmoothing, style, settings);
 }
 void Engine::createPendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, int weightAmount, std::vector<float> angles) {
     m_context.m_pendulum = new DoublePendulum(gravity, jointLength, weightMass, weightRadius, weightAmount, angles);

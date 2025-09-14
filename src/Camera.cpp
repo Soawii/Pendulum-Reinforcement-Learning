@@ -3,13 +3,15 @@
 #include "util.hpp"
 #include <iostream>
 
-Camera::Camera(b2Vec2 center, float zoom) 
-        :   m_center(center, 20.0f),
-            m_zoom(zoom, 20.0f) {
+Camera::Camera(b2Vec2 center, float zoom, float centerSmoothing, float zoomSmothing) 
+        :   m_center(center, centerSmoothing),
+            m_zoom(zoom, zoomSmothing) {
     m_boundBody = {};
+    m_isFollowingBody = false;
 }
 void Camera::bindToBody(b2BodyId boundBody) {
     m_boundBody = boundBody;
+    m_isFollowingBody = false;
 }
 void Camera::unbindFromBody() {
     m_boundBody = {};
@@ -19,7 +21,16 @@ void Camera::update(float dt) {
     m_zoom.update(dt);
     if (B2_IS_NULL(m_boundBody))
         return;
-    m_center.setInstantly(b2Body_GetPosition(m_boundBody));
+    b2Vec2 bodyPos = b2Body_GetPosition(m_boundBody);
+    if (m_isFollowingBody) {
+        m_center.setInstantly(bodyPos);
+    }
+    else {
+        m_center = bodyPos;
+        if (util::getSquaredLengthBetweenPoints(m_center.get(), bodyPos) < 0.05f) {
+            m_isFollowingBody = true;
+        }
+    }
 }
 
 void Camera::zoom(float mult) {

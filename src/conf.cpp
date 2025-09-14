@@ -9,7 +9,7 @@ namespace conf {
 	int window::FPS = 60;
 	float window::dt = 1.0f / FPS;
 
-	int sim::weightAmount = 2; 
+	int sim::weightAmount = 1; 
 	std::vector<float> sim::angles = { 	// angles for the weights, needs to contain at least the same amount of angles 
 		constants::PI / 2 - 0.1f,		// as there weights (indicated by sim::weightAmount)
 		constants::PI / 2 - 0.1f};
@@ -36,6 +36,8 @@ namespace conf {
 	float inputs::zoomMult = 1.2f;
 	float inputs::cameraMouseSensitivity = 1.0f;
 	float inputs::cameraKeyboardSensitivity = 20.0f;
+	float inputs::cameraCenterSmoothing = 0.35f;
+    float inputs::cameraZoomSmoothing = 0.3f;
 
 	float draw::jointWidth = 1.0f;
 	float draw::jointConnectionWidth = 4.0f;

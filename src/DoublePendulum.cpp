@@ -83,11 +83,11 @@ float DoublePendulum::getBasePosition() {
 }
 b2BodyId DoublePendulum::getInteresectingBody(b2Vec2 p) {
     for (int i = 0; i < m_weightAmount; i++) {
-        if (util::getSquaredLengthBetweenPointAndBody(p, m_weights[i]) <= m_weightRadius * m_weightRadius) {
+        if (util::getSquaredLengthBetweenPoints(p, b2Body_GetPosition(m_weights[i])) <= m_weightRadius * m_weightRadius) {
             return m_weights[i];
         }
     }
-    if (util::getSquaredLengthBetweenPointAndBody(p, m_anchor) <= 1.2 * conf::sim::baseSize * conf::sim::baseSize) {
+    if (util::getSquaredLengthBetweenPoints(p, b2Body_GetPosition(m_anchor)) <= 1.2 * conf::sim::baseSize * conf::sim::baseSize) {
         return m_anchor;
     }
     return {};

@@ -5,7 +5,7 @@
 
 class Camera {
 public:
-	Camera(b2Vec2 center, float zoom);
+	Camera(b2Vec2 center, float zoom, float centerSmoothing, float zoomSmoothing);
 
 	void bindToBody(b2BodyId boundBody);
 	void unbindFromBody();
@@ -34,4 +34,5 @@ public:
 	TimingVariable<b2Vec2> m_center;
 	TimingVariable<float> m_zoom;
 	b2BodyId m_boundBody;
+	bool m_isFollowingBody;
 };

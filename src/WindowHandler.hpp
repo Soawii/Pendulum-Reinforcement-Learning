@@ -10,6 +10,7 @@ public:
     WindowHandler(
         sf::VideoMode mode, const sf::String &title, 
         b2Vec2 cameraCenter, float cameraZoom,
+        float cameraCenterSmoothing, float cameraZoomSmoothing,
         sf::Uint32 style, const sf::ContextSettings &settings);
 
     void drawSlider();

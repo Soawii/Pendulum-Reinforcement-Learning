@@ -15,6 +15,7 @@ public:
     void createWindowHandler(
         sf::VideoMode mode, const sf::String &title, 
         b2Vec2 cameraCenter, float cameraZoom,
+        float cameraCenterSmoothing, float cameraZoomSmoothing,
         sf::Uint32 style = 7U, const sf::ContextSettings &settings = sf::ContextSettings());
     void createPendulum(b2Vec2 gravity, float jointLength, 
         float weightMass, float weightRadius, 
