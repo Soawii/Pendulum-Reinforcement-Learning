@@ -1,6 +1,6 @@
 #pragma once
-#include "WindowHandler.hpp"
-#include "DoublePendulum.hpp"
+#include "../draw/WindowHandler.hpp"
+#include "../sim/DoublePendulum.hpp"
 
 class EngineContext {
 public:

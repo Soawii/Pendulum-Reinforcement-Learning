@@ -70,4 +70,11 @@ namespace conf {
             sliderColor,
             sliderOutlineColor;
     };
+
+    class fonts {
+    public:
+        static sf::Font mono, arrows;
+    };
+
+    void CONFSetup();
 }

@@ -1,12 +1,18 @@
 #include <box2d/box2d.h>
 #include "DoublePendulum.hpp"
-#include "conf.hpp"
-#include "util.hpp"
+#include "../conf.hpp"
+#include "../util/util.hpp"
 #include <iostream>
 
-DoublePendulum::DoublePendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, int weightAmount, std::vector<float> angles) {
+DoublePendulum::DoublePendulum(
+        b2Vec2 gravity, float jointLength, float weightMass, 
+        float weightRadius, int weightAmount, 
+        float maxBaseVelocity, float baseAcceleration,
+        std::vector<float> angles) {
+    m_maxBaseVelocity = maxBaseVelocity;
     m_weightAmount = weightAmount;
     m_weightRadius = weightRadius;
+    m_baseAcceleration = baseAcceleration;
     
     b2WorldDef worldDef = b2DefaultWorldDef();
     worldDef.gravity = gravity;
@@ -102,8 +108,16 @@ void DoublePendulum::applyForceToBase(b2Vec2 force) {
 void DoublePendulum::setBaseVelocity(float velocity) {
     b2Body_SetLinearVelocity(m_anchor, {velocity, 0.0f});
 }
+float DoublePendulum::getBaseVelocity() {
+    return m_baseVelocity;
+}
 void DoublePendulum::setBaseGoalVelocity(float velocity) {
     m_baseGoalVelocity = velocity;
+    m_baseGoalVelocity = std::min(m_baseGoalVelocity, m_maxBaseVelocity);
+    m_baseGoalVelocity = std::max(m_baseGoalVelocity, -m_maxBaseVelocity);
+}
+float DoublePendulum::getBaseGoalVelocity() {
+    return m_baseGoalVelocity;
 }
 void DoublePendulum::resetVelocities() {
     for (int i = 0; i < m_weightAmount; i++) {
@@ -112,12 +126,13 @@ void DoublePendulum::resetVelocities() {
 }
 
 void DoublePendulum::updateVelocity(float dt) {
-    float dv = dt * conf::inputs::baseAcceleration;
-    float direction = m_baseGoalVelocity - m_baseVelocity;
+    float dv = dt * m_baseAcceleration;
+    float value = m_baseGoalVelocity - m_baseVelocity;
+    float direction = value > 0.0f ? 1.0f : -1.0f;
     if (abs(direction) > 0.001) {
-        m_baseVelocity += dv * direction;
-        m_baseVelocity = std::min(m_baseVelocity, conf::inputs::baseMaxVelocity);
-        m_baseVelocity = std::max(m_baseVelocity, -conf::inputs::baseMaxVelocity);
+        m_baseVelocity += dv * std::min(abs(value), 3.0f) * direction;
+        m_baseVelocity = std::min(m_baseVelocity, m_maxBaseVelocity);
+        m_baseVelocity = std::max(m_baseVelocity, -m_maxBaseVelocity);
     }
     setBaseVelocity(m_baseVelocity);
 }

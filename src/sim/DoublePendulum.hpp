@@ -4,7 +4,12 @@
 
 class DoublePendulum {
 public:
-    DoublePendulum(b2Vec2 gravity, float jointLength, float weightMass, float weightRadius, int weightAmount, std::vector<float> angles);
+    DoublePendulum(
+        b2Vec2 gravity, float jointLength, float weightMass, 
+        float weightRadius, int weightAmount, 
+        float maxBaseVelocity, float baseAcceleration,
+        std::vector<float> angles);
+
     void step(float dt, int subStepCount);
 
     float getBasePosition();
@@ -14,7 +19,9 @@ public:
 
     void applyForceToBase(b2Vec2 force);
     void setBaseVelocity(float velocity);
+    float getBaseVelocity();
     void setBaseGoalVelocity(float velocity);
+    float getBaseGoalVelocity();
     void resetVelocities();
 
     void updateVelocity(float dt);
@@ -29,4 +36,6 @@ public:
 
     float m_baseVelocity = 0.0f;
     float m_baseGoalVelocity = 0.0f;
+    float m_maxBaseVelocity = 0.0f;
+    float m_baseAcceleration = 0.0f;
 };

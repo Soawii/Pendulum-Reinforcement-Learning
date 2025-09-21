@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
-#include "TimingVariable.hpp"
+#include "../util/SmoothVariable.hpp"
 
 class Camera {
 public:
@@ -31,8 +31,8 @@ public:
     b2Vec2 screenSizeToWorld(sf::Vector2i screenSize);
     b2Vec2 screenSizeToWorld(sf::Vector2f screenSize);
 
-	TimingVariable<b2Vec2> m_center;
-	TimingVariable<float> m_zoom;
+	SmoothVariable<b2Vec2> m_center;
+	SmoothVariable<float> m_zoom;
 	b2BodyId m_boundBody;
 	bool m_isFollowingBody;
 };

@@ -1,6 +1,6 @@
 #include "Camera.hpp"
-#include "conf.hpp"
-#include "util.hpp"
+#include "../conf.hpp"
+#include "../util/util.hpp"
 #include <iostream>
 
 Camera::Camera(b2Vec2 center, float zoom, float centerSmoothing, float zoomSmothing) 

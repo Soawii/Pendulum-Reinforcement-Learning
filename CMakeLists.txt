@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(MyGame LANGUAGES C CXX)
+project(PendulumBalancing LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -25,14 +25,29 @@ set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(box2d)
 
-file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cpp)
-add_executable(MyGame ${SOURCES})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/PendulumBalancing)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
+add_executable(PendulumBalancing ${SOURCES})
 
-target_link_libraries(MyGame PRIVATE sfml-graphics sfml-window sfml-system box2d)
+target_link_libraries(PendulumBalancing PRIVATE sfml-graphics sfml-window sfml-system box2d)
+
+set_target_properties(PendulumBalancing PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_BINARY_DIR}/PendulumBalancing/bin
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/PendulumBalancing/bin
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/PendulumBalancing/bin
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_BINARY_DIR}/PendulumBalancing/bin
+)
 
 if(WIN32)
-    add_custom_command(TARGET MyGame POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:MyGame> $<TARGET_FILE_DIR:MyGame>
+    add_custom_command(TARGET PendulumBalancing POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:PendulumBalancing> $<TARGET_FILE_DIR:PendulumBalancing>
         COMMAND_EXPAND_LISTS
     )
 endif()
+
+add_custom_command(
+    TARGET PendulumBalancing POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/resources
+            ${CMAKE_BINARY_DIR}/PendulumBalancing/resources
+)

@@ -9,7 +9,7 @@ namespace conf {
 	int window::FPS = 60;
 	float window::dt = 1.0f / FPS;
 
-	int sim::weightAmount = 1; 
+	int sim::weightAmount = 2; 
 	std::vector<float> sim::angles = { 	// angles for the weights, needs to contain at least the same amount of angles 
 		constants::PI / 2 - 0.1f,		// as there weights (indicated by sim::weightAmount)
 		constants::PI / 2 - 0.1f};
@@ -26,7 +26,7 @@ namespace conf {
 	float sim::sliderOutlineWidth = 0.014f;
 	float sim::sliderOutlinePadding = 0.026f;
 
-	float draw::scale = 150.0f;
+	float draw::scale = 200.0f;
 	float draw::minScale = 10.0f;
 	float draw::maxScale = 5000.0f;
 	b2Vec2 draw::center = { 0.0f, 0.0f };
@@ -36,7 +36,7 @@ namespace conf {
 	float inputs::zoomMult = 1.2f;
 	float inputs::cameraMouseSensitivity = 1.0f;
 	float inputs::cameraKeyboardSensitivity = 20.0f;
-	float inputs::cameraCenterSmoothing = 0.35f;
+	float inputs::cameraCenterSmoothing = 0.5f;
     float inputs::cameraZoomSmoothing = 0.3f;
 
 	float draw::jointWidth = 1.0f;
@@ -50,4 +50,12 @@ namespace conf {
 	sf::Color colors::weightOutlineColor = sf::Color(255, 172, 28);
 	sf::Color colors::sliderColor = sf::Color(0, 0, 0, 0);
 	sf::Color colors::sliderOutlineColor = sf::Color(230, 230, 230);
+
+	sf::Font fonts::mono;
+	sf::Font fonts::arrows;
+
+	void CONFSetup() {
+		fonts::mono.loadFromFile("../resources/mono.ttf");
+		fonts::arrows.loadFromFile("../resources/arrows.ttf");
+	}
 }

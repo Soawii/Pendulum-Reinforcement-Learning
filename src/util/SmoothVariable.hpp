@@ -1,16 +1,16 @@
 #pragma once
 
 template <typename T>
-class TimingVariable {
+class SmoothVariable {
 public:
     inline const static float NO_SMOOTHING = -1.0f;
 
-    TimingVariable(T startingVar, float smoothing) {
+    SmoothVariable(T startingVar, float smoothing) {
         m_smoothing = smoothing;
         m_var = startingVar;
         m_smoothedVar = startingVar;
     }
-    TimingVariable operator=(T other) {
+    SmoothVariable operator=(T other) {
         if (m_smoothing == NO_SMOOTHING) {
             m_smoothedVar = other;
         }
