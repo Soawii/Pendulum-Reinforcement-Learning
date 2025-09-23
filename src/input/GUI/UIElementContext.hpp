@@ -19,7 +19,7 @@ public:
 
     bool mousePressedHere = false, keyboardPressedHere = false, stopPropogation = false;
 
-    sf::FloatRect mouseBounds, anchorBounds;
+    sf::FloatRect childrenBounds, anchorBounds, mouseBounds;
 
     UISizeMode sizeMode = UISizeMode::FIXED;
 

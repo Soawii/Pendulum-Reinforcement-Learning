@@ -4,39 +4,120 @@ UIElement::UIElement() : m_vars(m_context) {
 
 }
 
+sf::FloatRect UIElement::getLocalBounds() {
+    sf::FloatRect& anchorRect = (m_parent == m_anchor 
+        ? m_anchor->m_context->childrenBounds
+        : m_anchor->m_context->anchorBounds);
+
+    sf::Vector2f absoluteSize = m_vars.size.absolute.get();
+    sf::Vector2f relativeSize = m_vars.size.relative.get();
+    sf::Vector2f size = {
+        relativeSize.x * anchorRect.width + absoluteSize.x,
+        relativeSize.y * anchorRect.height + absoluteSize.y
+    };
+
+    return sf::FloatRect(0.0f, 0.0f, size.x, size.y);
+}
+
+sf::FloatRect UIElement::getGlobalBounds() {
+    sf::FloatRect& anchorRect = (m_parent == m_anchor 
+        ? m_anchor->m_context->childrenBounds
+        : m_anchor->m_context->anchorBounds);
+
+    sf::FloatRect localBounds = getLocalBounds();
+    sf::Vector2f absolutePos = m_vars.pos.absolute.get();
+    sf::Vector2f relativePos = m_vars.pos.relative.get();
+    sf::Vector2f absoluteOrigin = m_vars.origin.absolute.get();
+    sf::Vector2f relativeOrigin = m_vars.origin.relative.get();
+
+    sf::Vector2f pos = {
+        relativePos.x * anchorRect.width 
+        + absolutePos.x + anchorRect.left
+        - absoluteOrigin.x - relativeOrigin.x * localBounds.width
+        - localBounds.left,
+
+        relativePos.y * anchorRect.height 
+        + absolutePos.y + anchorRect.top
+        - absoluteOrigin.y - relativeOrigin.y * localBounds.height
+        - localBounds.top
+    };
+
+    return sf::FloatRect(pos.x, pos.y, localBounds.width, localBounds.height);
+}
+
+sf::FloatRect UIElement::applyTransform(const sf::FloatRect& globalBounds) {
+    sf::Vector2f absoluteTranslate = m_vars.translate.absolute.get();
+    sf::Vector2f relativeTranslate = m_vars.translate.relative.get();
+
+    return sf::FloatRect(
+        globalBounds.left + absoluteTranslate.x + relativeTranslate.x * globalBounds.width,
+        globalBounds.top + absoluteTranslate.y + relativeTranslate.y * globalBounds.height,
+        globalBounds.width, globalBounds.height);
+}
+
 void UIElement::computeSize() {
+    float borderWidth = m_vars.borderWidth.get();
+    float padding = m_vars.padding.get();
+
+    if (m_context->sizeMode == UISizeMode::FIXED) {
+        sf::FloatRect bounds = getGlobalBounds();
+        sf::FloatRect transformed = applyTransform(bounds);
+
+        m_context->mouseBounds = {transformed.left, transformed.top, transformed.width, transformed.height};
+        m_context->childrenBounds = {
+            transformed.left + borderWidth + padding, 
+            transformed.top + borderWidth + padding, 
+            transformed.width - borderWidth * 2 - padding * 2, 
+            transformed.height - borderWidth * 2 - padding * 2};
+        m_context->anchorBounds = {
+            bounds.left, 
+            bounds.top, 
+            bounds.width, 
+            bounds.height};
+    }
+
     for (int i = 0; i < m_children.size(); i++) {
         m_children[i]->computeSize();
     }
 
-    if (m_context->sizeMode != UISizeMode::FIT_CONTENT)
-        return;
+    if (m_context->sizeMode == UISizeMode::FIT_CONTENT) {
+        sf::Vector2f newSize = {0.0f, 0.0f};
 
-    float borderWidth = m_vars.borderWidth.get();
-    float padding = m_vars.padding.get();
-    sf::Vector2f newSize = {0.0f, 0.0f};
-
-    if (m_children.size() == 0) {
-        newSize = {borderWidth * 2 + padding * 2, borderWidth * 2 + padding * 2};
-    }
-    else {
-        float x_max = 0.0f, y_max = 0.0f;
-
-        for (int i = 0; i < m_children.size(); i++) {
-            UIElement* c = m_children[i];
-
-            sf::Vector2f c_size = c->getSize();
-            x_max = std::max(x_max, c_size.x);
-            y_max = std::max(y_max, c_size.y);
+        if (m_children.size() == 0) {
+            newSize = {borderWidth * 2 + padding * 2, borderWidth * 2 + padding * 2};
         }
-        newSize = {x_max + borderWidth * 2 + padding * 2, y_max + borderWidth * 2 + padding * 2};
+        else {
+            float x_min = 10000000.0f, y_min = 10000000.0f;
+            float x_max = -10000000.0f, y_max = -10000000.0f;
+
+            for (int i = 0; i < m_children.size(); i++) {
+                UIElement* c = m_children[i];
+
+                sf::FloatRect bounds = c->getGlobalBounds();
+                x_min = std::min(x_min, bounds.left);
+                y_min = std::min(y_min, bounds.top);
+                x_max = std::max(x_max, bounds.left + bounds.width);
+                y_max = std::max(y_max, bounds.top + bounds.height);
+            }
+
+            newSize = {(x_max - x_min) + borderWidth * 2 + padding * 2, (y_max - y_min) + borderWidth * 2 + padding * 2};
+        }
+        m_vars.size.absolute.setAllSmoothly(newSize);
+
+        sf::FloatRect bounds = getGlobalBounds();
+        sf::FloatRect transformed = applyTransform(bounds);
+        m_context->mouseBounds = {transformed.left, transformed.top, transformed.width, transformed.height};
+        m_context->childrenBounds = {
+            transformed.left + borderWidth + padding, 
+            transformed.top + borderWidth + padding, 
+            transformed.width - borderWidth * 2 - padding * 2, 
+            transformed.height - borderWidth * 2 - padding * 2};
+        m_context->anchorBounds = {
+            bounds.left, 
+            bounds.top, 
+            bounds.width, 
+            bounds.height};
     }
-
-    m_vars.absoluteSize.setAllSmoothly(newSize);
-}
-
-sf::Vector2f UIElement::getSize() {
-    return m_vars.absoluteSize.get();
 }
 
 void UIElement::propogateCall(const std::function<void(UIElement*)>& func) {
@@ -47,25 +128,6 @@ void UIElement::propogateCall(const std::function<void(UIElement*)>& func) {
 }
 
 void UIElement::draw(WindowHandler* window) {
-    sf::FloatRect& anchorRect = (m_parent == m_anchor 
-        ? m_anchor->m_context->anchorBounds
-        : m_anchor->m_context->mouseBounds);
-
-    sf::Vector2f absolutePos = m_vars.absolutePos.get();
-    sf::Vector2f relativePos = m_vars.relativePos.get();
-    sf::Vector2f absoluteSize = m_vars.absoluteSize.get();
-    sf::Vector2f relativeSize = m_vars.relativeSize.get();
-
-    sf::Vector2f pos = {
-        relativePos.x * anchorRect.width + absolutePos.x + anchorRect.left,
-        relativePos.y * anchorRect.height + absolutePos.y + anchorRect.top
-    };
-
-    sf::Vector2f size = {
-        relativeSize.x * anchorRect.width + absoluteSize.x,
-        relativeSize.y * anchorRect.height + absoluteSize.y
-    };
-
     ColorHSL color = m_vars.color.get();
     ColorHSL borderColor = m_vars.borderColor.get();
 
@@ -75,22 +137,14 @@ void UIElement::draw(WindowHandler* window) {
     const float borderWidth = m_vars.borderWidth.get();
     const float padding = m_vars.padding.get();
 
+    sf::FloatRect& bounds = m_context->mouseBounds;
+
     shapes::RoundedOutlinedRect shape(
-        pos, size.x, size.y, 
-        borderRadius,
-        sfColor,
-        borderWidth,
-        sfBorderColor,
-        0.0f
+        {bounds.left, bounds.top}, bounds.width, bounds.height, 
+        borderRadius, sfColor, borderWidth, sfBorderColor, 0.0f
     );
 
     shape.draw(window->m_window);
-    m_context->mouseBounds = {pos.x, pos.y, size.x, size.y};
-    m_context->anchorBounds = {
-        pos.x + borderWidth + padding, 
-        pos.y + borderWidth + padding, 
-        size.x - borderWidth * 2 - padding * 2, 
-        size.y - borderWidth * 2 - padding * 2};
 
     for (int i = 0; i < m_children.size(); i++) {
         m_children[i]->draw(window);

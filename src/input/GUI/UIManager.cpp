@@ -8,16 +8,12 @@
 UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     m_windowElement = new WindowElement(m_engineContext.m_windowHandler);
     addElement(m_windowElement, nullptr, nullptr, "window", {});
-    sf::Vector2u windowSize = m_engineContext.m_windowHandler->getSize();
-    m_windowElement->m_context->mouseBounds = sf::FloatRect(0.0f, 0.0f, windowSize.x, windowSize.y);
-    m_windowElement->m_context->anchorBounds = sf::FloatRect(0.0f, 0.0f, windowSize.x, windowSize.y);
     
     float transitionTime = 0.075f;
 
     auto class_textbutton = [transitionTime](UIElement* e) {
         e->m_vars.borderRadius.setAll(20.0f);
         e->m_vars.borderWidth.setAll(3.0f);
-        e->m_vars.padding.setAll(20.0f);
 
         ColorHSL baseColor = ColorHSL(245, 245, 245);
         ColorHSL ligherBaseColor = ColorHSL(baseColor.h, baseColor.s, baseColor.l - 0.2f, baseColor.a);
@@ -38,7 +34,7 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
         e->m_vars.color.setAll(ColorHSL(130, 130, 255));
         e->m_vars.color.setDuration(transitionTime);
         e->m_vars.color.setState(UIElementState::ACTIVE, ColorHSL(245, 245, 245));
-        e->m_vars.relativePos.setAll({0.5f, 0.5f});
+        e->m_vars.pos.relative.setAll({0.5f, 0.5f});
     };
 
     registerClass("button", class_textbutton);
@@ -47,11 +43,13 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     Button* button_left = new Button();
     addElement(button_left, m_windowElement, m_windowElement, "button1", {"button"});
     button_left->m_context->onPressKeys.push_back(sf::Keyboard::Left);
-    button_left->m_vars.absolutePos.setAll({15.0f, -105.0f});
-    button_left->m_vars.relativePos.setAll({0.0f, 1.0f});
-    button_left->m_vars.absoluteSize.setAll({90.0f, 90.0f});
-    button_left->m_vars.absolutePos.setDuration(transitionTime);
-    button_left->m_vars.absolutePos.setState(UIElementState::ACTIVE, {15.0f, -120.0f});
+    button_left->m_vars.pos.absolute.setAll({15.0f, -105.0f});
+    button_left->m_vars.pos.relative.setAll({0.0f, 1.0f});
+    button_left->m_vars.size.absolute.setAll({90.0f, 90.0f});
+
+    button_left->m_vars.translate.absolute.setDuration(transitionTime);
+    button_left->m_vars.translate.absolute.setState(UIElementState::ACTIVE, {0.0f, -15.0f});
+
     button_left->m_context->whileActive.push_back([this]() {
         this->m_engineContext.m_pendulum->setBaseGoalVelocity(
             this->m_engineContext.m_pendulum->m_baseGoalVelocity - this->m_engineContext.m_pendulum->m_maxBaseVelocity);
@@ -59,18 +57,21 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
 
     sf::String leftArrowStr;
     leftArrowStr += static_cast<sf::Uint32>(0x2190);
-    TextElement* text1 = new TextElement(leftArrowStr, conf::fonts::arrows, 24, 1);
+    TextElement* text1 = new TextElement(leftArrowStr, conf::fonts::mono, 36, 1);
+    text1->m_vars.origin.relative.setAll({0.5f, 0.5f});
     addElement(text1, button_left, button_left, "button1-text", {"text_button"});
     text1->m_vars.color.setContext(button_left->m_context);
 
     Button* button_right = new Button();
-    addElement(button_right, m_windowElement, m_windowElement, "button2", {"button"});
+    addElement(button_right, m_windowElement, button_left, "button2", {"button"});
     button_right->m_context->onPressKeys.push_back(sf::Keyboard::Right);
-    button_right->m_vars.absolutePos.setAll({120.0f, -105.0f});
-    button_right->m_vars.relativePos.setAll({0.0f, 1.0f});
-    button_right->m_vars.absoluteSize.setAll({90.0f, 90.0f});
-    button_right->m_vars.absolutePos.setDuration(transitionTime);
-    button_right->m_vars.absolutePos.setState(UIElementState::ACTIVE, {120.0f, -120.0f});
+    button_right->m_vars.pos.absolute.setAll({15.0f, 0.0f});
+    button_right->m_vars.pos.relative.setAll({1.0f, 0.0f});
+    button_right->m_vars.size.absolute.setAll({90.0f, 90.0f});
+
+    button_right->m_vars.translate.absolute.setDuration(transitionTime);
+    button_right->m_vars.translate.absolute.setState(UIElementState::ACTIVE, {0.0f, -15.0f});
+
     button_right->m_context->whileActive.push_back([this]() {
         this->m_engineContext.m_pendulum->setBaseGoalVelocity(
             this->m_engineContext.m_pendulum->m_baseGoalVelocity + this->m_engineContext.m_pendulum->m_maxBaseVelocity);
@@ -78,7 +79,8 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     
     sf::String rightArrowStr;
     rightArrowStr += static_cast<sf::Uint32>(0x2192);
-    TextElement* text2 = new TextElement(rightArrowStr, conf::fonts::arrows, 24, 1);
+    TextElement* text2 = new TextElement(rightArrowStr, conf::fonts::mono, 36, 1);
+    text2->m_vars.origin.relative.setAll({0.5f, 0.5f});
     addElement(text2, button_right, button_right, "button2-text", {"text_button"});
     text2->m_vars.color.setContext(button_right->m_context);
 }

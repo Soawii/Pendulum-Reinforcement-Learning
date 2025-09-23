@@ -5,6 +5,8 @@
 #include "conf.hpp"
 #include "engine/Engine.hpp"
 #include <iostream>
+#include <chrono>
+#include "util/util.hpp"
 
 int main() {
     conf::CONFSetup();
@@ -28,7 +30,6 @@ int main() {
 
     while (engine.getWindow()->isOpen()) {
         sf::Event event;
-
         engine.startFrame();
         while (engine.getWindow()->pollEvent(event)) {
             engine.handleEvent(event);

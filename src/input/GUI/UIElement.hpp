@@ -15,9 +15,11 @@ class UIElement {
 public:
     UIElement();
 
-    virtual void computeSize();
+    virtual sf::FloatRect getLocalBounds();
+    virtual sf::FloatRect getGlobalBounds();
+    virtual sf::FloatRect applyTransform(const sf::FloatRect& globalBounds);
 
-    virtual sf::Vector2f getSize();
+    virtual void computeSize();
 
     virtual void propogateCall(const std::function<void(UIElement*)>& func);
 

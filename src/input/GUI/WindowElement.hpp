@@ -6,6 +6,8 @@ class WindowElement : public UIElement {
 public:
     WindowElement(WindowHandler* window);
 
+    sf::FloatRect getGlobalBounds() override;
+    void computeSize() override;
     void draw(WindowHandler* window) override;
     void update(MouseContext& mouseContext, KeyboardContext& keyboardContext) override;
 

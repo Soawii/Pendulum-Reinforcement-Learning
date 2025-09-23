@@ -112,16 +112,29 @@ public:
     StateVariable<T> m_var;
 };
 
+class ContextStateVariableRelAbs {
+public:
+    ContextStateVariableRelAbs(
+        UIElementContext* context,
+        sf::Vector2f absVar, float absDuration, std::function<float(float)> absTimingFunc,
+        sf::Vector2f relVar, float relDuration, std::function<float(float)> relTimingFunc);
+
+    void checkChangedState();
+
+    ContextStateVariable<sf::Vector2f> absolute;
+    ContextStateVariable<sf::Vector2f> relative;
+};
+
 class StateVariables {
 public:
     StateVariables(UIElementContext* defaultContext);
 
-    bool checkChangedStates();
+    void checkChangedStates();
 
-    ContextStateVariable<sf::Vector2f> relativePos;
-    ContextStateVariable<sf::Vector2f> absolutePos;
-    ContextStateVariable<sf::Vector2f> relativeSize;
-    ContextStateVariable<sf::Vector2f> absoluteSize; 
+    ContextStateVariableRelAbs pos;
+    ContextStateVariableRelAbs size;
+    ContextStateVariableRelAbs origin;
+    ContextStateVariableRelAbs translate;
 
     ContextStateVariable<float> borderRadius;
     ContextStateVariable<float> padding;
