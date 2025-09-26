@@ -6,7 +6,7 @@ namespace conf {
 
 	int window::WIDTH = 1600;
 	int window::HEIGHT = 900;
-	int window::FPS = 60;
+	int window::FPS = 144;
 	float window::dt = 1.0f / FPS;
 
 	int sim::weightAmount = 2; 

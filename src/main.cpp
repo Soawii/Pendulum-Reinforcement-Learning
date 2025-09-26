@@ -30,6 +30,7 @@ int main() {
 
     while (engine.getWindow()->isOpen()) {
         sf::Event event;
+
         engine.startFrame();
         while (engine.getWindow()->pollEvent(event)) {
             engine.handleEvent(event);
