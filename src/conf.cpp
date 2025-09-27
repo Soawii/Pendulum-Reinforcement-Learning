@@ -54,8 +54,11 @@ namespace conf {
 	sf::Font fonts::mono;
 	sf::Font fonts::arrows;
 
+	std::chrono::steady_clock::time_point time::now;
+
 	void CONFSetup() {
 		fonts::mono.loadFromFile("../resources/mono.ttf");
 		fonts::arrows.loadFromFile("../resources/arrows.ttf");
+		time::now = std::chrono::steady_clock::now();
 	}
 }

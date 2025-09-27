@@ -16,8 +16,8 @@ public:
     void setAutoFill(bool enable);
     void draw(WindowHandler* window) override;
 private:
-    void resizeToFit(const sf::FloatRect& parentBounds);
-    void resizeToFill(const sf::FloatRect& parentBounds);
+    void resizeToFit(const Bounds& parentBounds);
+    void resizeToFill(const Bounds& parentBounds);
 
     sf::Text m_text;
     bool m_autoFit = false;

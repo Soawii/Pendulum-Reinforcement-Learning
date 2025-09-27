@@ -10,7 +10,7 @@ namespace shapes {
         m_arr[0].color = color;
         m_arr[1].color = color;
     }
-    void Line::draw(sf::RenderWindow& window) {
+    void Line::draw(sf::RenderTarget& window, sf::RenderStates states) const {
         window.draw(m_arr);
     }
 
@@ -26,7 +26,7 @@ namespace shapes {
             m_arr[i].color = color;
         }
     }
-    void Circle::draw(sf::RenderWindow& window) {
+    void Circle::draw(sf::RenderTarget& window, sf::RenderStates states) const {
         window.draw(m_arr);
     }
 
@@ -53,7 +53,7 @@ namespace shapes {
         m_arr[points * 2] = m_arr[0];
         m_arr[points * 2 + 1] = m_arr[1];
     }
-    void HollowCircle::draw(sf::RenderWindow& window) {
+    void HollowCircle::draw(sf::RenderTarget& window, sf::RenderStates states) const {
         window.draw(m_arr);
     }
 
@@ -85,7 +85,7 @@ namespace shapes {
         m_arr[2].color = color;
         m_arr[3].color = color;
     }
-    void Rect::draw(sf::RenderWindow& window) {
+    void Rect::draw(sf::RenderTarget& window, sf::RenderStates states) const {
         window.draw(m_arr);
     }
 
@@ -124,8 +124,8 @@ namespace shapes {
             m_arr[i].color = color;
         }
     }
-    void RoundedRect::draw(sf::RenderWindow& window) {
-        window.draw(m_arr);
+    void RoundedRect::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+        window.draw(m_arr, states);
     }
 
     RoundedOutlinedRect::RoundedOutlinedRect(
@@ -168,8 +168,9 @@ namespace shapes {
         m_outline[points_quarterCircle * 4 * 2] = m_outline[0];
         m_outline[points_quarterCircle * 4 * 2 + 1] = m_outline[1];
     }
-    void RoundedOutlinedRect::draw(sf::RenderWindow& window) {
-        window.draw(m_innerRect);
-        window.draw(m_outline);
+
+    void RoundedOutlinedRect::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+        window.draw(m_innerRect, states);
+        window.draw(m_outline, states);
     }
 }

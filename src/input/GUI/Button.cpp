@@ -2,7 +2,8 @@
 #include "../../draw/Shapes.hpp"
 #include <iostream>
 
-Button::Button() {}
+Button::Button()
+: UIElement() {}
 
 void Button::draw(WindowHandler* window) {
     UIElement::draw(window);

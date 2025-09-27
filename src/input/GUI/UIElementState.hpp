@@ -1,11 +1,13 @@
 #pragma once
 
 enum class UIElementState {
-    NORMAL = 0,
-    HOVER = 1,
-    ACTIVE = 2,
-    PRESSED = 3,
-    STATE_AMOUNT = 4
+    HIDDEN = 0,
+    DISABLED = 1,
+    NORMAL = 2,
+    HOVER = 3,
+    ACTIVE = 4,
+    PRESSED = 5,
+    STATE_AMOUNT = 6
 };
 
 enum class UISizeMode {

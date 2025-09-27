@@ -30,64 +30,195 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
         e->m_vars.borderColor.setState(UIElementState::ACTIVE, baseColor);
     };
 
+    auto class_buttonmodal = [transitionTime](UIElement* e) {
+        e->m_vars.borderRadius.setAll(10.0f);
+
+        e->m_vars.size.relative.setAll({1.0f, 0.0f});
+        e->m_vars.size.absolute.setAll({0.0f, 80.0f});
+
+        e->m_vars.origin.relative.setAll({0.0f, 1.0f});
+        e->m_vars.pos.relative.setAll({0.0f, 1.0f});
+    };
+
+    auto center_text = [transitionTime](UIElement* e) {
+        e->m_vars.pos.relative.setAll({0.5f, 0.5f});
+        e->m_vars.origin.relative.setAll({0.5f, 0.5f});
+    };
+
     auto class_textinbutton = [transitionTime](UIElement* e) {
         e->m_vars.color.setAll(ColorHSL(130, 130, 255));
         e->m_vars.color.setDuration(transitionTime);
         e->m_vars.color.setState(UIElementState::ACTIVE, ColorHSL(245, 245, 245));
         e->m_vars.pos.relative.setAll({0.5f, 0.5f});
     };
+    
+    auto class_button_color = [](UIElement* e) {
+        ColorHSL baseColor = ColorHSL(200, 200, 200);
+        ColorHSL ligherBaseColor = ColorHSL(baseColor.h, baseColor.s, baseColor.l - 0.1f, baseColor.a);
+        ColorHSL activeColor = ColorHSL(baseColor.h, baseColor.s, baseColor.l - 0.2f, baseColor.a);
 
+        e->m_vars.color.setAll(baseColor);
+        e->m_vars.color.setState(UIElementState::HOVER, ligherBaseColor);
+        e->m_vars.color.setState(UIElementState::ACTIVE, activeColor);
+    };
+
+    auto class_button_green = [](UIElement* e) {
+        ColorHSL baseColor = ColorHSL(9, 121, 105);
+        ColorHSL ligherBaseColor = ColorHSL(baseColor.h, baseColor.s, baseColor.l + 0.05f, baseColor.a);
+        ColorHSL activeColor = ColorHSL(baseColor.h, baseColor.s, baseColor.l + 0.1f, baseColor.a);
+        e->m_vars.color.setAll(baseColor);
+        e->m_vars.color.setState(UIElementState::HOVER, ligherBaseColor);
+        e->m_vars.color.setState(UIElementState::ACTIVE, activeColor);
+    };
+    auto class_text_white = [](UIElement* e) {
+        ColorHSL baseColor = ColorHSL(255, 255, 255);
+        e->m_vars.color.setAll(baseColor);
+    };
+    auto class_button_move = [](UIElement* e) {
+        e->m_vars.borderRadius.setAll(10.0f);
+        e->m_vars.borderWidth.setAll(2.0f);
+        e->m_vars.borderColor.setAll(ColorHSL(255,255,255));
+    };
+
+    registerClass("button-move", class_button_move);
+    registerClass("button-green", class_button_green);
+    registerClass("text-white", class_text_white);
+    registerClass("button-grey", class_button_color);
+    registerClass("button-modal", class_buttonmodal);
     registerClass("button", class_textbutton);
+    registerClass("text_center", center_text);
     registerClass("text_button", class_textinbutton);
 
     Button* button_left = new Button();
-    addElement(button_left, m_windowElement, m_windowElement, "button1", {"button"});
+    addElement(button_left, m_windowElement, m_windowElement, "button1", {"button-green", "button-move"});
     button_left->m_context->onPressKeys.push_back(sf::Keyboard::Left);
     button_left->m_vars.pos.absolute.setAll({15.0f, -105.0f});
     button_left->m_vars.pos.relative.setAll({0.0f, 1.0f});
     button_left->m_vars.size.absolute.setAll({90.0f, 90.0f});
-
-    button_left->m_vars.translate.absolute.setDuration(transitionTime);
     button_left->m_vars.translate.absolute.setState(UIElementState::ACTIVE, {0.0f, -15.0f});
-
+    button_left->m_vars.translate.absolute.setDuration(transitionTime);
+    button_left->m_vars.color.setDuration(transitionTime);
     button_left->m_context->whileActive.push_back([this]() {
         this->m_engineContext.m_pendulum->setBaseGoalVelocity(
             this->m_engineContext.m_pendulum->m_baseGoalVelocity - this->m_engineContext.m_pendulum->m_maxBaseVelocity);
     });
-
     sf::String leftArrowStr;
     leftArrowStr += static_cast<sf::Uint32>(0x2190);
     TextElement* text1 = new TextElement(leftArrowStr, conf::fonts::mono, 36, 1);
-    text1->m_vars.origin.relative.setAll({0.5f, 0.5f});
-    addElement(text1, button_left, button_left, "button1-text", {"text_button"});
+    addElement(text1, button_left, button_left, "button1-text", {"text_center", "text-white"});
     text1->m_vars.color.setContext(button_left->m_context);
 
     Button* button_right = new Button();
-    addElement(button_right, m_windowElement, button_left, "button2", {"button"});
+    addElement(button_right, m_windowElement, button_left, "button2", {"button-green", "button-move"});
     button_right->m_context->onPressKeys.push_back(sf::Keyboard::Right);
     button_right->m_vars.pos.absolute.setAll({15.0f, 0.0f});
     button_right->m_vars.pos.relative.setAll({1.0f, 0.0f});
     button_right->m_vars.size.absolute.setAll({90.0f, 90.0f});
-
-    button_right->m_vars.translate.absolute.setDuration(transitionTime);
     button_right->m_vars.translate.absolute.setState(UIElementState::ACTIVE, {0.0f, -15.0f});
-
+    button_right->m_vars.translate.absolute.setDuration(transitionTime);
+    button_right->m_vars.color.setDuration(transitionTime);
     button_right->m_context->whileActive.push_back([this]() {
         this->m_engineContext.m_pendulum->setBaseGoalVelocity(
             this->m_engineContext.m_pendulum->m_baseGoalVelocity + this->m_engineContext.m_pendulum->m_maxBaseVelocity);
     });
-    
     sf::String rightArrowStr;
     rightArrowStr += static_cast<sf::Uint32>(0x2192);
     TextElement* text2 = new TextElement(rightArrowStr, conf::fonts::mono, 36, 1);
-    text2->m_vars.origin.relative.setAll({0.5f, 0.5f});
-    addElement(text2, button_right, button_right, "button2-text", {"text_button"});
+    addElement(text2, button_right, button_right, "button2-text", {"text_center", "text-white"});
     text2->m_vars.color.setContext(button_right->m_context);
+
+    const float modal_time = 0.4f;
+    auto class_modal = [modal_time](UIElement* e) {
+        e->m_vars.borderRadius.setAll(20.0f);
+        e->m_vars.borderWidth.setAll(5.0f);
+        e->m_vars.padding.setAll(10.0f);
+
+        ColorHSL baseColor = ColorHSL(255, 255, 255);
+        ColorHSL borderColor = ColorHSL(230, 230, 230);
+
+        e->m_vars.color.setAll(baseColor);
+        e->m_vars.borderColor.setAll(borderColor);
+
+        e->m_vars.origin.relative.setAll({0.5f, 0.5f});
+        e->m_vars.pos.relative.setAll({0.5, 0.5f});
+        e->m_vars.size.absolute.setAll({400, 500});
+
+        e->m_vars.scale.setAll(1.0f);
+        e->m_vars.scale.setState(UIElementState::DISABLED, 0.1f);
+
+        e->m_vars.rotate.setAll(0.0f);
+        e->m_vars.rotate.setState(UIElementState::DISABLED, -270.0f);
+
+        e->m_vars.opacity.setAll(1.0f);
+        e->m_vars.opacity.setState(UIElementState::DISABLED, 0.0f);
+
+        e->setState(UIElementState::DISABLED);
+
+        e->m_vars.rotate.setDuration(modal_time);
+        e->m_vars.opacity.setDuration(modal_time);
+        e->m_vars.scale.setDuration(modal_time);
+    };  
+    registerClass("class-modal", class_modal);
+
+    UIElement* modal = new UIElement();
+    addElement(modal, m_windowElement, m_windowElement, "modal", {"class-modal"});
+
+    sf::String text_modal_info_str("Info");
+    TextElement* text_modal_info = new TextElement(text_modal_info_str, conf::fonts::mono, 32, 1);
+    text_modal_info->m_vars.color.setAll(ColorHSL(0,0,0,255));
+    text_modal_info->m_vars.origin.relative.setAll({0.5f, 0.0f});
+    text_modal_info->m_vars.pos.relative.setAll({0.5f, 0.0f});
+    text_modal_info->m_vars.pos.absolute.setAll({0.0f, 10.0f});
+    addElement(text_modal_info, modal, modal, "text_modal_info", {});
+
+    sf::String text_modal_stat_str = 
+        sf::String("W|A|S|D - move camera\n")
+        + leftArrowStr + sf::String("|") + rightArrowStr + sf::String("     - move base\n")
+        + sf::String("Ctrl+   - zoom in\nCtrl-   - zoom out\n1|2|3   - focus camera");
+    TextElement* text_modal_stat = new TextElement(text_modal_stat_str, conf::fonts::mono, 24, 1);
+    text_modal_stat->m_vars.color.setAll(ColorHSL(0,0,0,255));
+    text_modal_stat->m_vars.pos.absolute.setAll({0.0f, 60.0f});
+    addElement(text_modal_stat, modal, modal, "text_modal_stat", {});
+
+    Button* modal_button = new Button();
+    addElement(modal_button, modal, modal, "modal_button", {"button-modal", "button-green"});
+    modal_button->m_context->onClick.push_back([modal]() {
+        if (modal->m_context->m_current.state != UIElementState::DISABLED) {
+            modal->setState(UIElementState::DISABLED);
+        }
+    });
+    sf::String text_modal_button_str("okay...");
+    TextElement* text_modal_button = new TextElement(text_modal_button_str, conf::fonts::mono, 24, 1);
+    addElement(text_modal_button, modal_button, modal_button, "text_modal_button", {"text_center", "text-white"});
+
+    Button* button_open = new Button();
+    addElement(button_open, m_windowElement, m_windowElement, "modal_open", {"button-green"});
+    button_open->m_vars.origin.relative.setAll({1.0f, 1.0f});
+    button_open->m_vars.pos.relative.setAll({1.0f, 1.0f});
+    button_open->m_vars.pos.absolute.setAll({-15.0f, -15.0f});
+    button_open->m_context->sizeMode[0] = UISizeMode::FIXED;
+    button_open->m_context->sizeMode[1] = UISizeMode::FIT_CONTENT;
+    button_open->m_vars.size.absolute.setAll({200.0f, 0.0f});
+    button_open->m_vars.padding.setAll(20.0f);
+    button_open->m_vars.borderRadius.setAll(10.0f);
+    button_open->m_context->onClick.push_back([modal]() {
+        if (modal->m_context->m_current.state == UIElementState::DISABLED) {
+            modal->setState(UIElementState::NORMAL);
+        }
+        else {
+            modal->setState(UIElementState::DISABLED);
+        }
+    });
+    sf::String text_open("info");
+    TextElement* text_modal_open = new TextElement(text_open, conf::fonts::mono, 22, 1);
+    text_modal_open->m_vars.color.setAll(ColorHSL(0,0,0,255));
+    addElement(text_modal_open, button_open, button_open, "text_modal_button_1", {"text_center", "text-white"});
 }
 
 void UIManager::addElement(
         UIElement* elem, UIElement* parent, UIElement* anchor, 
         std::string elementId, std::vector<std::string> elementClasses) {
+
     if (m_idToElement.find(elementId) != m_idToElement.end()) {
         std::cerr << "Duplicate ID: " << elementId << std::endl;
         return;
@@ -96,6 +227,8 @@ void UIManager::addElement(
     m_idToElement[elementId] = elem;
     elem->m_anchor = anchor;
     elem->m_parent = parent;
+    elem->m_context->id = elementId;
+
     if (parent)
         parent->m_children.push_back(elem);
 
@@ -112,6 +245,7 @@ void UIManager::draw() {
 
 void UIManager::update(MouseContext& mouseContext, KeyboardContext& keyboardContext) {
     m_windowElement->computeSize();
+    m_windowElement->computeTransforms();
     m_windowElement->update(mouseContext, keyboardContext);
     m_windowElement->propogateCall([](UIElement* e){
         e->m_vars.checkChangedStates();

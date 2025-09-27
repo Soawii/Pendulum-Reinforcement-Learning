@@ -29,6 +29,8 @@ void Engine::createUIManager() {
 }
 
 void Engine::startFrame() {
+    conf::time::now = std::chrono::steady_clock::now();
+
     m_mouseHandler.startFrame();
     m_keyboardHandler.startFrame();
 
@@ -43,6 +45,13 @@ void Engine::endFrame() {
 void Engine::handleEvent(sf::Event& e) {
     if (e.type == sf::Event::Closed) {
         m_context.m_windowHandler->m_window.close();
+    }
+    else if (e.type == sf::Event::Resized) {
+        m_context.m_windowHandler->m_window.setSize({e.size.width, e.size.height});
+        const sf::View view(sf::FloatRect(0.0f, 0.0f, e.size.width, e.size.height));
+        m_context.m_windowHandler->m_window.setView(view);
+        conf::window::WIDTH = e.size.width;
+        conf::window::HEIGHT = e.size.height;
     }
     m_mouseHandler.handleEvent(e);
     m_keyboardHandler.handleEvent(e);

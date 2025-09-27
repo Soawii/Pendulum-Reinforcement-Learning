@@ -11,8 +11,6 @@ void UIElementContext::startFrame() {
 }
 void UIElementContext::endFrame() {
     m_prev.state = m_current.state;
-    mousePressedHere = mousePressedHere;
-    keyboardPressedHere = keyboardPressedHere;
 }
 bool UIElementContext::wasStateChanged() {
     return m_prev.state != m_current.state;

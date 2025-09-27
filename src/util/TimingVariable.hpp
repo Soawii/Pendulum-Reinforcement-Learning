@@ -2,6 +2,7 @@
 #include <functional>
 #include <chrono>
 #include <SFML/Graphics.hpp>
+#include "../conf.hpp"
 
 namespace TimingFunctions {
     float linear(float t);
@@ -29,14 +30,13 @@ public:
         }
         float timeLeft = 0.0f;
         if (m_start != m_end) {
-            std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-            std::chrono::duration<float> dur(now - m_timepoint);
+            std::chrono::duration<float> dur(conf::time::now - m_timepoint);
             float secondsPassed = dur.count();
             timeLeft = m_duration - secondsPassed;
             m_start = m_end;
         }
         m_end = other;
-        m_timepoint = std::chrono::steady_clock::now() - std::chrono::milliseconds(int(timeLeft * 1000.0f));
+        m_timepoint = conf::time::now - std::chrono::milliseconds(int(timeLeft * 1000.0f));
         return *this;
     }
     void setInstantly(T var) {
@@ -46,8 +46,7 @@ public:
     T get() {
         if (m_duration == 0.0f)
             return m_end;
-        std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-        std::chrono::duration<float> dur(now - m_timepoint);
+        std::chrono::duration<float> dur(conf::time::now - m_timepoint);
         float secondsPassed = dur.count();
 
         if (secondsPassed > m_duration) {

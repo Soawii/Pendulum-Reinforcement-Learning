@@ -10,9 +10,9 @@ sf::FloatRect WindowElement::getGlobalBounds() {
 
 void WindowElement::computeSize() {
     sf::Vector2u windowSize = m_window->getSize();
-    m_context->mouseBounds = sf::FloatRect(0.0f, 0.0f, windowSize.x, windowSize.y);
-    m_context->anchorBounds = sf::FloatRect(0.0f, 0.0f, windowSize.x, windowSize.y);
-    m_context->childrenBounds = sf::FloatRect(0.0f, 0.0f, windowSize.x, windowSize.y);
+    m_context->mouseBounds = Bounds({0.0f, 0.0f}, windowSize.x, windowSize.y);
+    m_context->anchorBounds = Bounds({0.0f, 0.0f}, windowSize.x, windowSize.y);
+    m_context->childrenBounds = Bounds({0.0f, 0.0f}, windowSize.x, windowSize.y);
 
     for (int i = 0; i < m_children.size(); i++) {
         m_children[i]->computeSize();

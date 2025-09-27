@@ -40,8 +40,8 @@ int main() {
         engine.m_context.m_windowHandler->clear(conf::colors::backgroundColor);
         engine.m_context.m_windowHandler->draw(*engine.m_context.m_pendulum);
         engine.m_UIManager->draw();
-        engine.m_context.m_windowHandler->display();
 
+        engine.m_context.m_windowHandler->display();
         engine.endFrame();
     }
     return 0;

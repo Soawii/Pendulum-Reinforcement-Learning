@@ -25,9 +25,16 @@ StateVariables::StateVariables(UIElementContext* defaultContext)
     origin(defaultContext, 
         {0.0f, 0.0f}, 0.0f, TimingFunctions::smoothstep,
         {0.0f, 0.0f}, 0.0f, TimingFunctions::smoothstep),  
+    transformOrigin(defaultContext, 
+        {0.0f, 0.0f}, 0.0f, TimingFunctions::smoothstep,
+        {0.5f, 0.5f}, 0.0f, TimingFunctions::smoothstep),  
+
     translate(defaultContext, 
         {0.0f, 0.0f}, 0.0f, TimingFunctions::smoothstep,
         {0.0f, 0.0f}, 0.0f, TimingFunctions::smoothstep),  
+    rotate(defaultContext, 0.0f, 0.0f, TimingFunctions::smoothstep),
+    scale(defaultContext, 1.0f, 0.0f, TimingFunctions::smoothstep),
+    opacity(defaultContext, 1.0f, 0.0f, TimingFunctions::smoothstep),
 
     borderRadius(defaultContext, 0.0f, 0.0f, TimingFunctions::smoothstep),
     padding(defaultContext, 0.0f, 0.0f, TimingFunctions::smoothstep),
@@ -42,7 +49,12 @@ void StateVariables::checkChangedStates() {
     pos.checkChangedState();
     size.checkChangedState();
     origin.checkChangedState();
+    transformOrigin.checkChangedState();
+    opacity.checkChangedState();
+
     translate.checkChangedState();
+    rotate.checkChangedState();
+    scale.checkChangedState();
 
     borderRadius.checkChangedState();
     borderWidth.checkChangedState();

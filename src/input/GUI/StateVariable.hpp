@@ -134,12 +134,16 @@ public:
     ContextStateVariableRelAbs pos;
     ContextStateVariableRelAbs size;
     ContextStateVariableRelAbs origin;
+    ContextStateVariableRelAbs transformOrigin;
+
     ContextStateVariableRelAbs translate;
+    ContextStateVariable<ColorHSL> color;
+    ContextStateVariable<ColorHSL> borderColor;
+    ContextStateVariable<float> rotate;
+    ContextStateVariable<float> scale;
+    ContextStateVariable<float> opacity;
 
     ContextStateVariable<float> borderRadius;
     ContextStateVariable<float> padding;
     ContextStateVariable<float> borderWidth;
-
-    ContextStateVariable<ColorHSL> color;
-    ContextStateVariable<ColorHSL> borderColor;
 };

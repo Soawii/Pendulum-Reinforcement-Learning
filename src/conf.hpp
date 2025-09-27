@@ -2,6 +2,7 @@
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <chrono>
 
 namespace conf {
     class constants {
@@ -74,6 +75,11 @@ namespace conf {
     class fonts {
     public:
         static sf::Font mono, arrows;
+    };
+
+    class time {
+    public:
+        static std::chrono::steady_clock::time_point now;
     };
 
     void CONFSetup();

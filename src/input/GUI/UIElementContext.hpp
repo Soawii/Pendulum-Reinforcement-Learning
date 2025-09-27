@@ -6,6 +6,7 @@
 #include <vector>
 #include "../../draw/Color.hpp"
 #include "UIElementState.hpp"
+#include "Bounds.hpp"
 
 
 class UIElementFrameContext {
@@ -16,12 +17,18 @@ public:
 class UIElementContext {
 public:
     UIElementFrameContext m_prev, m_current;
+    std::string id;
 
     bool mousePressedHere = false, keyboardPressedHere = false, stopPropogation = false;
 
-    sf::FloatRect childrenBounds, anchorBounds, mouseBounds;
+    Bounds childrenBounds, anchorBounds, mouseBounds;
 
-    UISizeMode sizeMode = UISizeMode::FIXED;
+    sf::Transform calculatedTransform;
+    float calculatedOpacity;
+
+    sf::Shader opacityShader;
+
+    UISizeMode sizeMode[2] = {UISizeMode::FIXED, UISizeMode::FIXED};
 
     std::vector<sf::Keyboard::Key> onPressKeys;
     std::vector<std::function<void()>> onClick;

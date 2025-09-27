@@ -35,6 +35,9 @@ void KeyboardHandler::update(float dt) {
         }
     }
 
+    if (m_context.isPressedThisFrame(sf::Keyboard::O)) {
+    }
+
     for (int i = int(sf::Keyboard::Num1); i < int(sf::Keyboard::Num9); i++) {
         if (m_context.isPressedThisFrame(sf::Keyboard::Key(i))) {
             int weightNumber = i - int(sf::Keyboard::Num1);

@@ -36,7 +36,7 @@ void WindowHandler::drawSlider() {
             conf::colors::sliderOutlineColor,
             float(m_camera.worldSizeToScreen(conf::sim::sliderOutlinePadding)));
 
-    slider.draw(m_window);
+    m_window.draw(slider);
 }
 void WindowHandler::drawBase(const b2BodyId baseId) {
     const b2Vec2 world_anchor = b2Body_GetPosition(baseId);
@@ -49,7 +49,7 @@ void WindowHandler::drawBase(const b2BodyId baseId) {
             15,
             conf::colors::baseColor);
 
-    base.draw(m_window);
+    m_window.draw(base);
 }
 void WindowHandler::drawWeight(const b2BodyId weightId) {
     const b2Vec2 world_body = b2Body_GetPosition(weightId);
@@ -68,8 +68,8 @@ void WindowHandler::drawWeight(const b2BodyId weightId) {
 
     shapes::Circle circle((sf::Vector2f)screen_body, screen_radius, 50, conf::colors::weightColor);
 
-    circle.draw(m_window);
-    hollow_circle.draw(m_window);
+    m_window.draw(circle);
+    m_window.draw(hollow_circle);
 }
 void WindowHandler::drawJoint(const b2JointId jointId) {
     const b2BodyId body1 = b2Joint_GetBodyA(jointId);
@@ -88,9 +88,9 @@ void WindowHandler::drawJoint(const b2JointId jointId) {
         (sf::Vector2f)screen_body2 - sf::Vector2f(conf::draw::jointConnectionWidth, conf::draw::jointConnectionWidth) / 2.0f,
         conf::draw::jointConnectionWidth, conf::draw::jointConnectionWidth, conf::colors::jointConnectionColor);
     
-    line.draw(m_window);
-    connection1.draw(m_window);
-    connection2.draw(m_window);
+    m_window.draw(line);
+    m_window.draw(connection1);
+    m_window.draw(connection2);
 }
 void WindowHandler::drawPendulum(const DoublePendulum& pendulum) {
     drawSlider();
