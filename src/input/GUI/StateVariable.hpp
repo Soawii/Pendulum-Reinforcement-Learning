@@ -119,7 +119,7 @@ public:
         sf::Vector2f absVar, float absDuration, std::function<float(float)> absTimingFunc,
         sf::Vector2f relVar, float relDuration, std::function<float(float)> relTimingFunc);
 
-    void checkChangedState();
+    bool checkChangedState();
 
     ContextStateVariable<sf::Vector2f> absolute;
     ContextStateVariable<sf::Vector2f> relative;
@@ -129,7 +129,7 @@ class StateVariables {
 public:
     StateVariables(UIElementContext* defaultContext);
 
-    void checkChangedStates();
+    bool checkChangedStates();
 
     ContextStateVariableRelAbs pos;
     ContextStateVariableRelAbs size;

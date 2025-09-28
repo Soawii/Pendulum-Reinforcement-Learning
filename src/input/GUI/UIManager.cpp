@@ -9,7 +9,7 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     m_windowElement = new WindowElement(m_engineContext.m_windowHandler);
     addElement(m_windowElement, nullptr, nullptr, "window", {});
     
-    float transitionTime = 0.075f;
+    float transitionTime = 0.1f;
 
     auto class_textbutton = [transitionTime](UIElement* e) {
         e->m_vars.borderRadius.setAll(20.0f);
@@ -70,16 +70,30 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
         e->m_vars.color.setState(UIElementState::HOVER, ligherBaseColor);
         e->m_vars.color.setState(UIElementState::ACTIVE, activeColor);
     };
-    auto class_text_white = [](UIElement* e) {
+    auto class_button_white = [transitionTime](UIElement* e) {
+        ColorHSL baseColor = ColorHSL(250,251,252);
+        e->m_vars.color.setAll(ColorHSL(250,251,252));
+        e->m_vars.color.setState(UIElementState::HOVER, ColorHSL(baseColor.h, baseColor.s, baseColor.l - 0.07f, baseColor.a));
+        e->m_vars.color.setState(UIElementState::ACTIVE, ColorHSL(baseColor.h, baseColor.s, baseColor.l - 0.14f, baseColor.a));
+        e->m_vars.color.setDuration(transitionTime);
+    };
+    auto class_text_white = [transitionTime](UIElement* e) {
         ColorHSL baseColor = ColorHSL(255, 255, 255);
+        e->m_vars.color.setDuration(transitionTime);
+        e->m_vars.color.setAll(baseColor);
+    };
+    auto class_text_dark = [transitionTime](UIElement* e) {
+        ColorHSL baseColor = ColorHSL(36,41,46);
+        e->m_vars.color.setDuration(transitionTime);
         e->m_vars.color.setAll(baseColor);
     };
     auto class_button_move = [](UIElement* e) {
         e->m_vars.borderRadius.setAll(10.0f);
-        e->m_vars.borderWidth.setAll(2.0f);
-        e->m_vars.borderColor.setAll(ColorHSL(255,255,255));
+        e->m_vars.size.absolute.setAll({80.0f, 80.0f});
     };
 
+    registerClass("button-white", class_button_white);
+    registerClass("text-dark", class_text_dark);
     registerClass("button-move", class_button_move);
     registerClass("button-green", class_button_green);
     registerClass("text-white", class_text_white);
@@ -90,14 +104,14 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     registerClass("text_button", class_textinbutton);
 
     Button* button_left = new Button();
-    addElement(button_left, m_windowElement, m_windowElement, "button1", {"button-green", "button-move"});
+    addElement(button_left, m_windowElement, m_windowElement, "button1", 
+        {"button-move", "button-white"});
     button_left->m_context->onPressKeys.push_back(sf::Keyboard::Left);
-    button_left->m_vars.pos.absolute.setAll({15.0f, -105.0f});
+    button_left->m_vars.origin.relative.setAll({0.0f, 1.0f});
+    button_left->m_vars.pos.absolute.setAll({15.0f, -15.0f});
     button_left->m_vars.pos.relative.setAll({0.0f, 1.0f});
-    button_left->m_vars.size.absolute.setAll({90.0f, 90.0f});
     button_left->m_vars.translate.absolute.setState(UIElementState::ACTIVE, {0.0f, -15.0f});
     button_left->m_vars.translate.absolute.setDuration(transitionTime);
-    button_left->m_vars.color.setDuration(transitionTime);
     button_left->m_context->whileActive.push_back([this]() {
         this->m_engineContext.m_pendulum->setBaseGoalVelocity(
             this->m_engineContext.m_pendulum->m_baseGoalVelocity - this->m_engineContext.m_pendulum->m_maxBaseVelocity);
@@ -105,18 +119,17 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     sf::String leftArrowStr;
     leftArrowStr += static_cast<sf::Uint32>(0x2190);
     TextElement* text1 = new TextElement(leftArrowStr, conf::fonts::mono, 36, 1);
-    addElement(text1, button_left, button_left, "button1-text", {"text_center", "text-white"});
+    addElement(text1, button_left, button_left, "button1-text", {"text_center", "text-dark"});
     text1->m_vars.color.setContext(button_left->m_context);
 
     Button* button_right = new Button();
-    addElement(button_right, m_windowElement, button_left, "button2", {"button-green", "button-move"});
+    addElement(button_right, m_windowElement, button_left, "button2", 
+        {"button-move", "button-white"});
     button_right->m_context->onPressKeys.push_back(sf::Keyboard::Right);
     button_right->m_vars.pos.absolute.setAll({15.0f, 0.0f});
     button_right->m_vars.pos.relative.setAll({1.0f, 0.0f});
-    button_right->m_vars.size.absolute.setAll({90.0f, 90.0f});
     button_right->m_vars.translate.absolute.setState(UIElementState::ACTIVE, {0.0f, -15.0f});
     button_right->m_vars.translate.absolute.setDuration(transitionTime);
-    button_right->m_vars.color.setDuration(transitionTime);
     button_right->m_context->whileActive.push_back([this]() {
         this->m_engineContext.m_pendulum->setBaseGoalVelocity(
             this->m_engineContext.m_pendulum->m_baseGoalVelocity + this->m_engineContext.m_pendulum->m_maxBaseVelocity);
@@ -124,7 +137,7 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     sf::String rightArrowStr;
     rightArrowStr += static_cast<sf::Uint32>(0x2192);
     TextElement* text2 = new TextElement(rightArrowStr, conf::fonts::mono, 36, 1);
-    addElement(text2, button_right, button_right, "button2-text", {"text_center", "text-white"});
+    addElement(text2, button_right, button_right, "button2-text", {"text_center", "text-dark"});
     text2->m_vars.color.setContext(button_right->m_context);
 
     const float modal_time = 0.4f;
@@ -174,7 +187,7 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     sf::String text_modal_stat_str = 
         sf::String("W|A|S|D - move camera\n")
         + leftArrowStr + sf::String("|") + rightArrowStr + sf::String("     - move base\n")
-        + sf::String("Ctrl+   - zoom in\nCtrl-   - zoom out\n1|2|3   - focus camera");
+        + sf::String("Ctrl+   - zoom in\nCtrl-   - zoom out\n1|2|3   - focus camera\nSPACE   - stop weights");
     TextElement* text_modal_stat = new TextElement(text_modal_stat_str, conf::fonts::mono, 24, 1);
     text_modal_stat->m_vars.color.setAll(ColorHSL(0,0,0,255));
     text_modal_stat->m_vars.pos.absolute.setAll({0.0f, 60.0f});
@@ -196,10 +209,7 @@ UIManager::UIManager(EngineContext context) : m_engineContext(context) {
     button_open->m_vars.origin.relative.setAll({1.0f, 1.0f});
     button_open->m_vars.pos.relative.setAll({1.0f, 1.0f});
     button_open->m_vars.pos.absolute.setAll({-15.0f, -15.0f});
-    button_open->m_context->sizeMode[0] = UISizeMode::FIXED;
-    button_open->m_context->sizeMode[1] = UISizeMode::FIT_CONTENT;
-    button_open->m_vars.size.absolute.setAll({200.0f, 0.0f});
-    button_open->m_vars.padding.setAll(20.0f);
+    button_open->m_vars.size.absolute.setAll({150.0f, 80.0f});
     button_open->m_vars.borderRadius.setAll(10.0f);
     button_open->m_context->onClick.push_back([modal]() {
         if (modal->m_context->m_current.state == UIElementState::DISABLED) {

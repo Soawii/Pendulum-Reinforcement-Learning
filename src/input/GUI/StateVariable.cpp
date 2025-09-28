@@ -7,12 +7,15 @@ ContextStateVariableRelAbs::ContextStateVariableRelAbs(
         sf::Vector2f relVar, float relDuration, std::function<float(float)> relTimingFunc) 
     : absolute(context, absVar, absDuration, absTimingFunc),
     relative(context, relVar, relDuration, relTimingFunc) {
-    
 }
 
-void ContextStateVariableRelAbs::checkChangedState() {
-    absolute.checkChangedState();
-    relative.checkChangedState();
+bool ContextStateVariableRelAbs::checkChangedState() {
+    bool flag = false;
+    if (absolute.checkChangedState())
+        flag = true;
+    if (relative.checkChangedState())
+        flag = true;
+    return flag;
 }
 
 StateVariables::StateVariables(UIElementContext* defaultContext)
@@ -45,21 +48,49 @@ StateVariables::StateVariables(UIElementContext* defaultContext)
 
 }
 
-void StateVariables::checkChangedStates() {
-    pos.checkChangedState();
-    size.checkChangedState();
-    origin.checkChangedState();
-    transformOrigin.checkChangedState();
-    opacity.checkChangedState();
+bool StateVariables::checkChangedStates() {
+    bool flag = false;
+    if (pos.checkChangedState()) {
+        flag = true;
+    }
+    if (size.checkChangedState()) {
+        flag = true;
+    }
+    if (origin.checkChangedState()) {
+        flag = true;
+    }
+    if (transformOrigin.checkChangedState()) {
+        flag = true;
+    }
+    if (opacity.checkChangedState()) {
+        flag = true;
+    }
 
-    translate.checkChangedState();
-    rotate.checkChangedState();
-    scale.checkChangedState();
+    if (translate.checkChangedState()) {
+        flag = true;
+    }
+    if (rotate.checkChangedState()) {
+        flag = true;
+    }
+    if (scale.checkChangedState()) {
+        flag = true;
+    }
 
-    borderRadius.checkChangedState();
-    borderWidth.checkChangedState();
-    padding.checkChangedState();
+    if (borderRadius.checkChangedState()) {
+        flag = true;
+    }
+    if (borderWidth.checkChangedState()) {
+        flag = true;
+    }
+    if (padding.checkChangedState()) {
+        flag = true;
+    }
 
-    color.checkChangedState();
-    borderColor.checkChangedState();
+    if (color.checkChangedState()) {
+        flag = true;
+    }
+    if (borderColor.checkChangedState()) {
+        flag = true;
+    }
+    return flag;
 }

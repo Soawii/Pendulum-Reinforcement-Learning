@@ -30,10 +30,15 @@ public:
         }
         float timeLeft = 0.0f;
         if (m_start != m_end) {
-            std::chrono::duration<float> dur(conf::time::now - m_timepoint);
-            float secondsPassed = dur.count();
-            timeLeft = m_duration - secondsPassed;
-            m_start = m_end;
+            if (m_start == other) {
+                std::chrono::duration<float> dur(conf::time::now - m_timepoint);
+                float secondsPassed = dur.count();
+                timeLeft = m_duration - secondsPassed;
+                m_start = m_end;
+            }
+            else {
+                m_start = get();
+            }
         }
         m_end = other;
         m_timepoint = conf::time::now - std::chrono::milliseconds(int(timeLeft * 1000.0f));

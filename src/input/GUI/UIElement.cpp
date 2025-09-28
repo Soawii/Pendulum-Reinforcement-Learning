@@ -66,59 +66,56 @@ void UIElement::computeBounds() {
 }
 
 void UIElement::computeSize() {
-    if (m_context->id == "modal_open") {
-        int a = 1;
-        this;
-    }
-
     if (m_context->sizeMode[0] == UISizeMode::FIXED || m_context->sizeMode[1] == UISizeMode::FIXED) {
         computeBounds();
     }
     for (int i = 0; i < m_children.size(); i++) {
         m_children[i]->computeSize();
     }
-    float borderWidth = m_vars.borderWidth.get();
-    float padding = m_vars.padding.get();
-    sf::Vector2f size = m_vars.size.absolute.get();
-    sf::Vector2f newSize = size;
 
-    if (m_context->sizeMode[0] == UISizeMode::FIT_CONTENT) {
-        if (m_children.size() == 0) {
-            newSize.x = borderWidth * 2 + padding * 2;
-        }
-        else {
-            float x_min = 10000000.0f;
-            float x_max = -10000000.0f;
-
-            for (int i = 0; i < m_children.size(); i++) {
-                UIElement* c = m_children[i];
-
-                sf::FloatRect bounds = c->getGlobalBounds();
-                x_min = std::min(x_min, bounds.left);
-                x_max = std::max(x_max, bounds.left + bounds.width);
-            }
-            newSize.x = (x_max - x_min) + borderWidth * 2 + padding * 2;
-        }
-    }
-    if (m_context->sizeMode[1] == UISizeMode::FIT_CONTENT) {
-        if (m_children.size() == 0) {
-            newSize.y = borderWidth * 2 + padding * 2;
-        }
-        else {
-            float y_min = 10000000.0f;
-            float y_max = -10000000.0f;
-
-            for (int i = 0; i < m_children.size(); i++) {
-                UIElement* c = m_children[i];
-
-                sf::FloatRect bounds = c->getGlobalBounds();
-                y_min = std::min(y_min, bounds.top);
-                y_max = std::max(y_max, bounds.top + bounds.height);
-            }
-            newSize.y = (y_max - y_min) + borderWidth * 2 + padding * 2;
-        }
-    }
     if (m_context->sizeMode[0] == UISizeMode::FIT_CONTENT || m_context->sizeMode[1] == UISizeMode::FIT_CONTENT) {
+        float borderWidth = m_vars.borderWidth.get();
+        float padding = m_vars.padding.get();
+        sf::Vector2f size = m_vars.size.absolute.get();
+        sf::Vector2f newSize = size;
+        
+        if (m_context->sizeMode[0] == UISizeMode::FIT_CONTENT) {
+            if (m_children.size() == 0) {
+                newSize.x = borderWidth * 2 + padding * 2;
+            }
+            else {
+                float x_min = 10000000.0f;
+                float x_max = -10000000.0f;
+
+                for (int i = 0; i < m_children.size(); i++) {
+                    UIElement* c = m_children[i];
+
+                    sf::FloatRect bounds = c->getGlobalBounds();
+                    x_min = std::min(x_min, bounds.left);
+                    x_max = std::max(x_max, bounds.left + bounds.width);
+                }
+                newSize.x = (x_max - x_min) + borderWidth * 2 + padding * 2;
+            }
+        }
+        if (m_context->sizeMode[1] == UISizeMode::FIT_CONTENT) {
+            if (m_children.size() == 0) {
+                newSize.y = borderWidth * 2 + padding * 2;
+            }
+            else {
+                float y_min = 10000000.0f;
+                float y_max = -10000000.0f;
+
+                for (int i = 0; i < m_children.size(); i++) {
+                    UIElement* c = m_children[i];
+
+                    sf::FloatRect bounds = c->getGlobalBounds();
+                    y_min = std::min(y_min, bounds.top);
+                    y_max = std::max(y_max, bounds.top + bounds.height);
+                }
+                newSize.y = (y_max - y_min) + borderWidth * 2 + padding * 2;
+            }
+        }
+
         if (newSize.x != size.x || newSize.y != size.y) {
             m_vars.size.absolute.setAllSmoothly(newSize);
         }
@@ -173,7 +170,7 @@ void UIElement::propogateCall(const std::function<void(UIElement*)>& func) {
 }
 
 void UIElement::draw(WindowHandler* window) {
-    if (m_context->m_current.state == UIElementState::HIDDEN)
+    if (m_context->m_current.state == UIElementState::HIDDEN || fabs(m_context->calculatedOpacity - 0.0f) < 0.001f)
         return;
 
     ColorHSL color = m_vars.color.get();
